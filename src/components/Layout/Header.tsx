@@ -1,14 +1,24 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Search, MapPin, Bell, User, Heart } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Search, MapPin, Bell, User, Heart, LogOut, Wallet } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+    setShowUserMenu(false);
+  };
 
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50">
@@ -16,11 +26,6 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3">
-            {/*<img*/}
-            {/*  src="/src/assets/nguessbeauty_logo_2.png"*/}
-            {/*  alt="NGUESSBEAUTY"*/}
-            {/*  className="h-40 w-auto"*/}
-            {/*/>*/}
             <div className="hidden sm:block">
               <h1 className="text-xl font-bold text-primary-600">NGUESSBEAUTY</h1>
               <p className="text-xs text-gray-500">Votre beauté, notre passion</p>
@@ -45,14 +50,16 @@ const Header: React.FC = () => {
             >
               Salons
             </Link>
-            <Link 
-              to="/mes-reservations" 
-              className={`font-medium transition-colors ${
-                isActive('/mes-reservations') ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600'
-              }`}
-            >
-              Mes Réservations
-            </Link>
+            {isAuthenticated && (
+              <Link 
+                to="/mes-reservations" 
+                className={`font-medium transition-colors ${
+                  isActive('/mes-reservations') ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600'
+                }`}
+              >
+                Mes Réservations
+              </Link>
+            )}
           </nav>
 
           {/* Action Buttons */}
@@ -71,29 +78,106 @@ const Header: React.FC = () => {
               <span className="text-sm">Douala</span>
             </div>
 
-            {/* Notifications */}
-            <Link 
-              to="/notifications"
-              className="p-2 text-gray-600 hover:text-primary-600 transition-colors relative"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                2
-              </span>
-            </Link>
+            {isAuthenticated ? (
+              <>
+                {/* Notifications */}
+                <Link 
+                  to="/notifications"
+                  className="p-2 text-gray-600 hover:text-primary-600 transition-colors relative"
+                >
+                  <Bell className="h-5 w-5" />
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                    2
+                  </span>
+                </Link>
 
-            {/* Favorites */}
-            <button className="p-2 text-gray-600 hover:text-primary-600 transition-colors">
-              <Heart className="h-5 w-5" />
-            </button>
+                {/* Loyalty Wallet (Client only) */}
+                {user?.role === 'client' && (
+                  <Link 
+                    to="/portefeuille-fidelite"
+                    className="p-2 text-gray-600 hover:text-primary-600 transition-colors"
+                  >
+                    <Wallet className="h-5 w-5" />
+                  </Link>
+                )}
 
-            {/* Profile */}
-            <Link 
-              to="/profil"
-              className="p-2 text-gray-600 hover:text-primary-600 transition-colors"
-            >
-              <User className="h-5 w-5" />
-            </Link>
+                {/* Favorites */}
+                <button className="p-2 text-gray-600 hover:text-primary-600 transition-colors">
+                  <Heart className="h-5 w-5" />
+                </button>
+
+                {/* User Menu */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="flex items-center space-x-2 p-2 text-gray-600 hover:text-primary-600 transition-colors"
+                  >
+                    {user?.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user.name}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <User className="h-5 w-5" />
+                    )}
+                    <span className="hidden sm:block text-sm font-medium">{user?.name}</span>
+                  </button>
+
+                  <AnimatePresence>
+                    {showUserMenu && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2"
+                      >
+                        <Link
+                          to="/profil"
+                          className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <User className="h-4 w-4" />
+                          <span>Mon profil</span>
+                        </Link>
+                        {user?.role === 'client' && (
+                          <Link
+                            to="/portefeuille-fidelite"
+                            className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            <Wallet className="h-4 w-4" />
+                            <span>Portefeuille fidélité</span>
+                          </Link>
+                        )}
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center space-x-2 w-full px-4 py-2 text-gray-700 hover:bg-gray-50"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          <span>Se déconnecter</span>
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                >
+                  Connexion
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  S'inscrire
+                </Link>
+              </div>
+            )}
 
             {/* Mobile Menu Toggle */}
             <button
@@ -162,15 +246,37 @@ const Header: React.FC = () => {
               >
                 Salons
               </Link>
-              <Link 
-                to="/mes-reservations" 
-                className={`block py-2 font-medium ${
-                  isActive('/mes-reservations') ? 'text-primary-600' : 'text-gray-700'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Mes Réservations
-              </Link>
+              {isAuthenticated && (
+                <Link 
+                  to="/mes-reservations" 
+                  className={`block py-2 font-medium ${
+                    isActive('/mes-reservations') ? 'text-primary-600' : 'text-gray-700'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Mes Réservations
+                </Link>
+              )}
+              
+              {!isAuthenticated && (
+                <div className="pt-3 border-t space-y-2">
+                  <Link
+                    to="/login"
+                    className="block py-2 text-gray-700 font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Connexion
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="block py-2 text-primary-600 font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    S'inscrire
+                  </Link>
+                </div>
+              )}
+              
               <div className="pt-3 border-t">
                 <div className="flex items-center space-x-2 text-gray-600">
                   <MapPin className="h-4 w-4" />
