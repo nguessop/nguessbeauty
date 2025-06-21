@@ -2,6 +2,7 @@ import React from 'react';
 import { Star, MapPin, Clock, Phone, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { mockSalons } from '../../data/mockData';
+import SalonWhatsAppButton from '../Chat/SalonWhatsAppButton';
 
 const FeaturedSalons: React.FC = () => {
   const formatPrice = (price: number) => {
@@ -119,7 +120,7 @@ const FeaturedSalons: React.FC = () => {
                 </div>
 
                 {/* Actions */}
-                <div className="flex space-x-2">
+                <div className="flex space-x-2 mb-4">
                   <button className="flex-1 bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
                     Réserver
                   </button>
@@ -128,8 +129,19 @@ const FeaturedSalons: React.FC = () => {
                   </button>
                 </div>
 
+                {/* WhatsApp Contact */}
+                <div className="mb-4">
+                  <SalonWhatsAppButton
+                    salonName={salon.name}
+                    whatsappNumber={salon.whatsapp || salon.phone}
+                    phoneNumber={salon.phone}
+                    variant="full"
+                    className="w-full"
+                  />
+                </div>
+
                 {/* Opening Hours */}
-                <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="pt-4 border-t border-gray-100">
                   <div className="flex items-center space-x-2 text-sm">
                     <Clock className="h-4 w-4 text-gray-400" />
                     <span className="text-secondary-600">

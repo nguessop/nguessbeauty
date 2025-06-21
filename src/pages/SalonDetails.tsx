@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { Star, MapPin, Phone, Clock, Heart, Share2, Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { mockSalons } from '../data/mockData';
+import SalonWhatsAppButton from '../components/Chat/SalonWhatsAppButton';
 
 const SalonDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -293,6 +294,17 @@ const SalonDetails: React.FC = () => {
                   <Clock className="h-5 w-5 text-primary-600" />
                   <span className="text-secondary-700">Ouvert aujourd'hui: 08:00 - 18:00</span>
                 </div>
+              </div>
+
+              {/* WhatsApp Contact Button */}
+              <div className="mt-4">
+                <SalonWhatsAppButton
+                  salonName={salon.name}
+                  whatsappNumber={salon.whatsapp || salon.phone}
+                  phoneNumber={salon.phone}
+                  variant="full"
+                  message={`Bonjour ${salon.name}, j'aimerais prendre rendez-vous. Pouvez-vous me donner vos disponibilités ?`}
+                />
               </div>
             </div>
 

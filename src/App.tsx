@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
+import FloatingChatButton from './components/Chat/FloatingChatButton';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Home from './pages/Home';
 import SalonSearch from './pages/SalonSearch';
@@ -71,6 +72,9 @@ function App() {
             </Routes>
           </main>
           <Footer />
+          
+          {/* Floating Chat Button */}
+          <FloatingChatButton />
         </div>
       </Router>
     </AuthProvider>
