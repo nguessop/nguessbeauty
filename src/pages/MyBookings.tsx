@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, MapPin, Phone, MessageCircle, MoreVertical, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
+import SalonWhatsAppButton from '../components/Chat/SalonWhatsAppButton';
 
 const MyBookings: React.FC = () => {
   const [activeTab, setActiveTab] = useState('upcoming');
@@ -14,6 +15,7 @@ const MyBookings: React.FC = () => {
           name: 'Élégance Coiffure',
           address: 'Akwa, Douala',
           phone: '+237 6 XX XX XX XX',
+          whatsapp: '+237 6 XX XX XX XX',
           image: 'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg'
         },
         service: {
@@ -35,6 +37,7 @@ const MyBookings: React.FC = () => {
           name: 'Beauty Palace',
           address: 'Bastos, Yaoundé',
           phone: '+237 6 YY YY YY YY',
+          whatsapp: '+237 6 YY YY YY YY',
           image: 'https://images.pexels.com/photos/3997379/pexels-photo-3997379.jpeg'
         },
         service: {
@@ -58,6 +61,7 @@ const MyBookings: React.FC = () => {
           name: 'Élégance Coiffure',
           address: 'Akwa, Douala',
           phone: '+237 6 XX XX XX XX',
+          whatsapp: '+237 6 XX XX XX XX',
           image: 'https://images.pexels.com/photos/3993449/pexels-photo-3993449.jpeg'
         },
         service: {
@@ -254,15 +258,17 @@ const MyBookings: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap gap-3">
+                      <div className="flex flex-wrap gap-3 mb-4">
                         <button className="flex items-center space-x-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
                           <Phone className="h-4 w-4" />
                           <span>Appeler</span>
                         </button>
-                        <button className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
-                          <MessageCircle className="h-4 w-4" />
-                          <span>WhatsApp</span>
-                        </button>
+                        <SalonWhatsAppButton
+                          salonName={booking.salon.name}
+                          whatsappNumber={booking.salon.whatsapp}
+                          variant="button"
+                          message={`Bonjour, j'ai un rendez-vous le ${formatDate(booking.date)} à ${booking.time}. Je souhaiterais vous contacter.`}
+                        />
                         <button className="px-4 py-2 border border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                           Modifier
                         </button>
@@ -394,9 +400,17 @@ const MyBookings: React.FC = () => {
                               ))}
                             </div>
                           </div>
-                          <button className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
-                            Réserver à nouveau
-                          </button>
+                          <div className="flex space-x-2">
+                            <SalonWhatsAppButton
+                              salonName={booking.salon.name}
+                              whatsappNumber={booking.salon.whatsapp}
+                              variant="button"
+                              message={`Bonjour ${booking.salon.name}, j'aimerais reprendre rendez-vous. J'étais très satisfait(e) de ma dernière visite.`}
+                            />
+                            <button className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                              Réserver à nouveau
+                            </button>
+                          </div>
                         </div>
                       ) : (
                         <div className="flex justify-between items-center">
@@ -404,9 +418,17 @@ const MyBookings: React.FC = () => {
                             <Star className="h-4 w-4" />
                             <span>Laisser un avis</span>
                           </button>
-                          <button className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
-                            Réserver à nouveau
-                          </button>
+                          <div className="flex space-x-2">
+                            <SalonWhatsAppButton
+                              salonName={booking.salon.name}
+                              whatsappNumber={booking.salon.whatsapp}
+                              variant="button"
+                              message={`Bonjour ${booking.salon.name}, j'aimerais reprendre rendez-vous.`}
+                            />
+                            <button className="bg-primary-600 hover:bg-primary-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                              Réserver à nouveau
+                            </button>
+                          </div>
                         </div>
                       )}
                     </motion.div>
