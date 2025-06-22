@@ -3,14 +3,22 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Search, MapPin, Bell, User, Heart, LogOut, Wallet } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
+import { useNotifications } from '../../hooks/useNotifications';
+import NotificationCenter from '../Notifications/NotificationCenter';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
+
+  const { unreadCount } = useNotifications(
+    user?.id || '', 
+    user?.role || 'client'
+  );
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -81,15 +89,17 @@ const Header: React.FC = () => {
             {isAuthenticated ? (
               <>
                 {/* Notifications */}
-                <Link 
-                  to="/notifications"
+                <button 
+                  onClick={() => setShowNotifications(true)}
                   className="p-2 text-gray-600 hover:text-primary-600 transition-colors relative"
                 >
                   <Bell className="h-5 w-5" />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-                    2
-                  </span>
-                </Link>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
 
                 {/* Loyalty Wallet (Client only) */}
                 {user?.role === 'client' && (
@@ -148,6 +158,16 @@ const Header: React.FC = () => {
                           >
                             <Wallet className="h-4 w-4" />
                             <span>Portefeuille fidélité</span>
+                          </Link>
+                        )}
+                        {user?.role === 'provider' && (
+                          <Link
+                            to="/provider/dashboard"
+                            className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                            onClick={() => setShowUserMenu(false)}
+                          >
+                            <User className="h-4 w-4" />
+                            <span>Tableau de bord</span>
                           </Link>
                         )}
                         <button
@@ -237,6 +257,7 @@ const Header: React.FC = () => {
               >
                 Accueil
               </Link>
+              
               <Link 
                 to="/salons" 
                 className={`block py-2 font-medium ${
@@ -287,6 +308,16 @@ const Header: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Notification Center */}
+      {isAuthenticated && (
+        <NotificationCenter
+          isOpen={showNotifications}
+          onClose={() => setShowNotifications(false)}
+          userId={user?.id || ''}
+          userType={user?.role || 'client'}
+        />
+      )}
     </header>
   );
 };

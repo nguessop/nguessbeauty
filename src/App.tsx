@@ -19,6 +19,13 @@ import ForgotPassword from './pages/Auth/ForgotPassword';
 import LoyaltyWallet from './pages/Client/LoyaltyWallet';
 import Unauthorized from './pages/Unauthorized';
 
+// Provider Pages
+import ProviderDashboard from './pages/Provider/Dashboard';
+import ProviderServices from './pages/Provider/Services';
+import ProviderStaff from './pages/Provider/Staff';
+import ProviderAnalytics from './pages/Provider/Analytics';
+import ProviderCommunications from './pages/Provider/Communications';
+
 function App() {
   return (
     <AuthProvider>
@@ -67,6 +74,33 @@ function App() {
               <Route path="/portefeuille-fidelite" element={
                 <ProtectedRoute requiredRole="client">
                   <LoyaltyWallet />
+                </ProtectedRoute>
+              } />
+
+              {/* Provider-only Routes */}
+              <Route path="/provider/dashboard" element={
+                <ProtectedRoute requiredRole="provider">
+                  <ProviderDashboard />
+                </ProtectedRoute>
+              } />
+              <Route path="/provider/services" element={
+                <ProtectedRoute requiredRole="provider">
+                  <ProviderServices />
+                </ProtectedRoute>
+              } />
+              <Route path="/provider/staff" element={
+                <ProtectedRoute requiredRole="provider">
+                  <ProviderStaff />
+                </ProtectedRoute>
+              } />
+              <Route path="/provider/analytics" element={
+                <ProtectedRoute requiredRole="provider">
+                  <ProviderAnalytics />
+                </ProtectedRoute>
+              } />
+              <Route path="/provider/communications" element={
+                <ProtectedRoute requiredRole="provider">
+                  <ProviderCommunications />
                 </ProtectedRoute>
               } />
             </Routes>
