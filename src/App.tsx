@@ -1,11 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
+import ProviderLayout from './components/Layout/ProviderLayout';
 import FloatingChatButton from './components/Chat/FloatingChatButton';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Home from './pages/Home';
+import Services from './pages/Services';
 import SalonSearch from './pages/SalonSearch';
 import SalonDetails from './pages/SalonDetails';
 import BookingFlow from './pages/BookingFlow';
@@ -26,89 +29,157 @@ import ProviderStaff from './pages/Provider/Staff';
 import ProviderAnalytics from './pages/Provider/Analytics';
 import ProviderCommunications from './pages/Provider/Communications';
 
+// Import i18n
+import './i18n';
+
+// Import Toastify CSS
+import 'react-toastify/dist/ReactToastify.css';
+
 function App() {
   return (
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-white">
-          <Header />
-          <main>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Home />} />
-              <Route path="/salons" element={<SalonSearch />} />
-              <Route path="/salon/:id" element={<SalonDetails />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/unauthorized" element={<Unauthorized />} />
-              
-              {/* Protected Routes */}
-              <Route path="/booking/:salonId" element={
-                <ProtectedRoute>
+          <Routes>
+            {/* Public Routes with Header/Footer */}
+            <Route path="/" element={
+              <>
+                <Header />
+                <main>
+                  <Home />
+                </main>
+                <Footer />
+                <FloatingChatButton />
+              </>
+            } />
+            
+            <Route path="/services" element={
+              <>
+                <Header />
+                <main>
+                  <Services />
+                </main>
+                <Footer />
+                <FloatingChatButton />
+              </>
+            } />
+            
+            <Route path="/salons" element={
+              <>
+                <Header />
+                <main>
+                  <SalonSearch />
+                </main>
+                <Footer />
+                <FloatingChatButton />
+              </>
+            } />
+            
+            <Route path="/salon/:id" element={
+              <>
+                <Header />
+                <main>
+                  <SalonDetails />
+                </main>
+                <Footer />
+                <FloatingChatButton />
+              </>
+            } />
+            
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            
+            {/* Protected Client Routes */}
+            <Route path="/booking/:salonId" element={
+              <ProtectedRoute>
+                <Header />
+                <main>
                   <BookingFlow />
-                </ProtectedRoute>
-              } />
-              <Route path="/booking-confirmation/:bookingId" element={
-                <ProtectedRoute>
+                </main>
+                <Footer />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/booking-confirmation/:bookingId" element={
+              <ProtectedRoute>
+                <Header />
+                <main>
                   <BookingConfirmation />
-                </ProtectedRoute>
-              } />
-              <Route path="/mes-reservations" element={
-                <ProtectedRoute>
+                </main>
+                <Footer />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/mes-reservations" element={
+              <ProtectedRoute>
+                <Header />
+                <main>
                   <MyBookings />
-                </ProtectedRoute>
-              } />
-              <Route path="/notifications" element={
-                <ProtectedRoute>
+                </main>
+                <Footer />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/notifications" element={
+              <ProtectedRoute>
+                <Header />
+                <main>
                   <Notifications />
-                </ProtectedRoute>
-              } />
-              <Route path="/profil" element={
-                <ProtectedRoute>
+                </main>
+                <Footer />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/profil" element={
+              <ProtectedRoute>
+                <Header />
+                <main>
                   <Profile />
-                </ProtectedRoute>
-              } />
-              
-              {/* Client-only Routes */}
-              <Route path="/portefeuille-fidelite" element={
-                <ProtectedRoute requiredRole="client">
+                </main>
+                <Footer />
+              </ProtectedRoute>
+            } />
+            
+            {/* Client-only Routes */}
+            <Route path="/portefeuille-fidelite" element={
+              <ProtectedRoute requiredRole="client">
+                <Header />
+                <main>
                   <LoyaltyWallet />
-                </ProtectedRoute>
-              } />
+                </main>
+                <Footer />
+              </ProtectedRoute>
+            } />
 
-              {/* Provider-only Routes */}
-              <Route path="/provider/dashboard" element={
-                <ProtectedRoute requiredRole="provider">
-                  <ProviderDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/provider/services" element={
-                <ProtectedRoute requiredRole="provider">
-                  <ProviderServices />
-                </ProtectedRoute>
-              } />
-              <Route path="/provider/staff" element={
-                <ProtectedRoute requiredRole="provider">
-                  <ProviderStaff />
-                </ProtectedRoute>
-              } />
-              <Route path="/provider/analytics" element={
-                <ProtectedRoute requiredRole="provider">
-                  <ProviderAnalytics />
-                </ProtectedRoute>
-              } />
-              <Route path="/provider/communications" element={
-                <ProtectedRoute requiredRole="provider">
-                  <ProviderCommunications />
-                </ProtectedRoute>
-              } />
-            </Routes>
-          </main>
-          <Footer />
+            {/* Provider Routes with Admin Layout */}
+            <Route path="/provider" element={
+              <ProtectedRoute requiredRole="provider">
+                <ProviderLayout />
+              </ProtectedRoute>
+            }>
+              <Route path="dashboard" element={<ProviderDashboard />} />
+              <Route path="services" element={<ProviderServices />} />
+              <Route path="staff" element={<ProviderStaff />} />
+              <Route path="analytics" element={<ProviderAnalytics />} />
+              <Route path="communications" element={<ProviderCommunications />} />
+            </Route>
+          </Routes>
           
-          {/* Floating Chat Button */}
-          <FloatingChatButton />
+          {/* Toast Container */}
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </div>
       </Router>
     </AuthProvider>
