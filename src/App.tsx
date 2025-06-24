@@ -155,9 +155,9 @@ function App() {
 
             {/* Provider Routes with Admin Layout */}
             <Route path="/provider" element={
-              <ProtectedRoute requiredRole="provider">
+              
                 <ProviderLayout />
-              </ProtectedRoute>
+             
             }>
               <Route path="dashboard" element={<ProviderDashboard />} />
               <Route path="services" element={<ProviderServices />} />
