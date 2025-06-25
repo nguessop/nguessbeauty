@@ -14,7 +14,8 @@
     "next": "Suivant",
     "previous": "Précédent",
     "yes": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "tagline": "Votre beauté, notre passion"
   },
   "navigation": {
     "home": "Accueil",
@@ -43,16 +44,19 @@
     "name": "Nom complet",
     "phone": "Téléphone"
   },
-  "dashboard": {
-    "welcome": "Bienvenue",
-    "todayAppointments": "RDV aujourd'hui",
-    "weekRevenue": "CA cette semaine",
-    "monthRevenue": "CA ce mois",
-    "totalClients": "Clients totaux",
-    "noShowRate": "Taux d'absence",
-    "recentAppointments": "Rendez-vous récents",
-    "quickActions": "Actions rapides",
-    "statistics": "Statistiques"
+  "pages": {
+    "services": {
+      "title": "Nos Services de Beauté"
+    },
+    "salons": {
+      "title": "Rechercher un Salon"
+    },
+    "profile": {
+      "title": "Mon Profil"
+    },
+    "notifications": {
+      "title": "Mes Notifications"
+    }
   },
   "services": {
     "title": "Services",
@@ -66,7 +70,13 @@
     "extensions": "Extensions",
     "braids": "Tresses",
     "relaxer": "Défrisage",
-    "coloring": "Coloration"
+    "coloring": "Coloration",
+    "coiffure": "Coiffure",
+    "maquillage": "Maquillage",
+    "soins-visage": "Soins visage",
+    "soins-corps": "Soins corps",
+    "tresses": "Tresses",
+    "defrisage": "Défrisage"
   },
   "search": {
     "placeholder": "Rechercher un salon, service...",
@@ -76,19 +86,114 @@
     "rating": "Note minimum",
     "sortBy": "Trier par",
     "nearMe": "Près de moi",
-    "results": "résultats trouvés",
+    "results": "{{count}} salon trouvé",
+    "results_plural": "{{count}} salons trouvés",
     "noResults": "Aucun résultat trouvé",
-    "advancedSearch": "Recherche avancée"
+    "advancedSearch": "Recherche avancée",
+    "allCities": "Toutes les villes",
+    "allServices": "Tous les services",
+    "allPrices": "Tous les prix",
+    "allRatings": "Toutes les notes",
+    "filters": "Filtres",
+    "stars": "étoiles",
+    "reviews": "avis",
+    "others": "autres",
+    "startingFrom": "À partir de",
+    "viewDetails": "Voir détails",
+    "openToday": "Ouvert aujourd'hui",
+    "tryDifferentCriteria": "Essayez de modifier vos critères de recherche",
+    "priceRange": {
+      "budget": "Économique",
+      "mid": "Modéré",
+      "premium": "Premium"
+    },
+    "sort": {
+      "rating": "Mieux notés",
+      "reviews": "Plus d'avis",
+      "priceLow": "Prix croissant",
+      "priceHigh": "Prix décroissant"
+    }
+  },
+  "profile": {
+    "memberSince": "Membre depuis",
+    "personalInfo": "Informations personnelles",
+    "city": "Ville",
+    "comingSoon": "Bientôt disponible",
+    "featureInDevelopment": "Cette fonctionnalité est en cours de développement",
+    "stats": {
+      "appointments": "Rendez-vous",
+      "loyaltyPoints": "Points fidélité",
+      "favoriteServices": "Services favoris"
+    },
+    "tabs": {
+      "profile": "Profil",
+      "loyalty": "Fidélité",
+      "favorites": "Favoris",
+      "settings": "Paramètres"
+    }
   },
   "notifications": {
-    "title": "Notifications",
-    "markAllRead": "Tout marquer comme lu",
-    "noNotifications": "Aucune notification",
     "appointmentReminder": "Rappel de rendez-vous",
     "appointmentConfirmed": "Rendez-vous confirmé",
-    "newAppointment": "Nouveau rendez-vous",
-    "promotion": "Promotion",
-    "reviewRequest": "Demande d'avis"
+    "promotion": "Offre spéciale",
+    "reviewRequest": "Donnez votre avis",
+    "unreadCount": "{{count}} notification non lue",
+    "unreadCount_plural": "{{count}} notifications non lues",
+    "allRead": "Toutes les notifications sont lues",
+    "markAllRead": "Tout marquer comme lu",
+    "markAsRead": "Marquer comme lu",
+    "noUnread": "Aucune notification non lue",
+    "noRead": "Aucune notification lue",
+    "noNotifications": "Aucune notification",
+    "noNotificationsDesc": "Vous recevrez ici vos notifications importantes",
+    "changeFilter": "Changez de filtre pour voir d'autres notifications",
+    "timeAgo": {
+      "now": "À l'instant",
+      "hours": "Il y a {{count}}h",
+      "days": "Il y a {{count}} jour",
+      "days_plural": "Il y a {{count}} jours"
+    },
+    "filters": {
+      "all": "Toutes",
+      "unread": "Non lues",
+      "read": "Lues"
+    },
+    "messages": {
+      "appointmentTomorrow": "Votre rendez-vous chez Élégance Coiffure est prévu demain à 14h00",
+      "appointmentConfirmed": "Votre rendez-vous du 18 janvier chez Beauty Palace a été confirmé",
+      "weekendOffer": "20% de réduction sur tous les soins visage ce week-end !",
+      "reviewRequest": "Comment s'est passé votre rendez-vous chez Élégance Coiffure ?"
+    },
+    "settings": {
+      "title": "Paramètres de notification",
+      "appointmentReminders": "Rappels de rendez-vous",
+      "appointmentRemindersDesc": "Recevoir des rappels avant vos rendez-vous",
+      "whatsapp": "Notifications WhatsApp",
+      "whatsappDesc": "Recevoir les notifications via WhatsApp",
+      "sms": "Notifications SMS",
+      "smsDesc": "Recevoir les notifications par SMS",
+      "promotions": "Promotions et offres",
+      "promotionsDesc": "Recevoir les offres spéciales des salons",
+      "reviews": "Demandes d'avis",
+      "reviewsDesc": "Recevoir des demandes d'évaluation après vos rendez-vous",
+      "save": "Sauvegarder les paramètres"
+    },
+    "welcome": {
+      "morning": "Bonjour {{name}} ! Bonne journée sur NGUESSBEAUTY 🌅",
+      "afternoon": "Bon après-midi {{name}} ! Ravi de vous revoir 🌞",
+      "evening": "Bonsoir {{name}} ! Passez une excellente soirée 🌙"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bienvenue",
+    "todayAppointments": "RDV aujourd'hui",
+    "weekRevenue": "CA cette semaine",
+    "monthRevenue": "CA ce mois",
+    "totalClients": "Clients totaux",
+    "noShowRate": "Taux d'absence",
+    "recentAppointments": "Rendez-vous récents",
+    "quickActions": "Actions rapides",
+    "statistics": "Statistiques"
   },
   "booking": {
     "book": "Réserver",

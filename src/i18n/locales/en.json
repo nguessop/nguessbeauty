@@ -14,7 +14,8 @@
     "next": "Next",
     "previous": "Previous",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "tagline": "Your beauty, our passion"
   },
   "navigation": {
     "home": "Home",
@@ -43,16 +44,19 @@
     "name": "Full Name",
     "phone": "Phone"
   },
-  "dashboard": {
-    "welcome": "Welcome",
-    "todayAppointments": "Today's Appointments",
-    "weekRevenue": "Week Revenue",
-    "monthRevenue": "Month Revenue",
-    "totalClients": "Total Clients",
-    "noShowRate": "No-show Rate",
-    "recentAppointments": "Recent Appointments",
-    "quickActions": "Quick Actions",
-    "statistics": "Statistics"
+  "pages": {
+    "services": {
+      "title": "Our Beauty Services"
+    },
+    "salons": {
+      "title": "Find a Salon"
+    },
+    "profile": {
+      "title": "My Profile"
+    },
+    "notifications": {
+      "title": "My Notifications"
+    }
   },
   "services": {
     "title": "Services",
@@ -66,7 +70,13 @@
     "extensions": "Extensions",
     "braids": "Braids",
     "relaxer": "Hair Relaxer",
-    "coloring": "Hair Coloring"
+    "coloring": "Hair Coloring",
+    "coiffure": "Haircut",
+    "maquillage": "Makeup",
+    "soins-visage": "Facial Care",
+    "soins-corps": "Body Care",
+    "tresses": "Braids",
+    "defrisage": "Hair Relaxer"
   },
   "search": {
     "placeholder": "Search salon, service...",
@@ -76,29 +86,124 @@
     "rating": "Minimum Rating",
     "sortBy": "Sort By",
     "nearMe": "Near Me",
-    "results": "results found",
+    "results": "{{count}} salon found",
+    "results_plural": "{{count}} salons found",
     "noResults": "No results found",
-    "advancedSearch": "Advanced Search"
+    "advancedSearch": "Advanced Search",
+    "allCities": "All cities",
+    "allServices": "All services",
+    "allPrices": "All prices",
+    "allRatings": "All ratings",
+    "filters": "Filters",
+    "stars": "stars",
+    "reviews": "reviews",
+    "others": "others",
+    "startingFrom": "Starting from",
+    "viewDetails": "View details",
+    "openToday": "Open today",
+    "tryDifferentCriteria": "Try modifying your search criteria",
+    "priceRange": {
+      "budget": "Budget",
+      "mid": "Moderate",
+      "premium": "Premium"
+    },
+    "sort": {
+      "rating": "Best rated",
+      "reviews": "Most reviews",
+      "priceLow": "Price ascending",
+      "priceHigh": "Price descending"
+    }
+  },
+  "profile": {
+    "memberSince": "Member since",
+    "personalInfo": "Personal information",
+    "city": "City",
+    "comingSoon": "Coming soon",
+    "featureInDevelopment": "This feature is under development",
+    "stats": {
+      "appointments": "Appointments",
+      "loyaltyPoints": "Loyalty points",
+      "favoriteServices": "Favorite services"
+    },
+    "tabs": {
+      "profile": "Profile",
+      "loyalty": "Loyalty",
+      "favorites": "Favorites",
+      "settings": "Settings"
+    }
   },
   "notifications": {
-    "title": "Notifications",
-    "markAllRead": "Mark All as Read",
-    "noNotifications": "No notifications",
     "appointmentReminder": "Appointment Reminder",
     "appointmentConfirmed": "Appointment Confirmed",
-    "newAppointment": "New Appointment",
-    "promotion": "Promotion",
-    "reviewRequest": "Review Request"
+    "promotion": "Special Offer",
+    "reviewRequest": "Leave a Review",
+    "unreadCount": "{{count}} unread notification",
+    "unreadCount_plural": "{{count}} unread notifications",
+    "allRead": "All notifications are read",
+    "markAllRead": "Mark all as read",
+    "markAsRead": "Mark as read",
+    "noUnread": "No unread notifications",
+    "noRead": "No read notifications",
+    "noNotifications": "No notifications",
+    "noNotificationsDesc": "You will receive your important notifications here",
+    "changeFilter": "Change filter to see other notifications",
+    "timeAgo": {
+      "now": "Just now",
+      "hours": "{{count}}h ago",
+      "days": "{{count}} day ago",
+      "days_plural": "{{count}} days ago"
+    },
+    "filters": {
+      "all": "All",
+      "unread": "Unread",
+      "read": "Read"
+    },
+    "messages": {
+      "appointmentTomorrow": "Your appointment at Élégance Coiffure is scheduled for tomorrow at 2:00 PM",
+      "appointmentConfirmed": "Your appointment on January 18th at Beauty Palace has been confirmed",
+      "weekendOffer": "20% off all facial treatments this weekend!",
+      "reviewRequest": "How was your appointment at Élégance Coiffure?"
+    },
+    "settings": {
+      "title": "Notification settings",
+      "appointmentReminders": "Appointment reminders",
+      "appointmentRemindersDesc": "Receive reminders before your appointments",
+      "whatsapp": "WhatsApp notifications",
+      "whatsappDesc": "Receive notifications via WhatsApp",
+      "sms": "SMS notifications",
+      "smsDesc": "Receive notifications by SMS",
+      "promotions": "Promotions and offers",
+      "promotionsDesc": "Receive special offers from salons",
+      "reviews": "Review requests",
+      "reviewsDesc": "Receive review requests after your appointments",
+      "save": "Save settings"
+    },
+    "welcome": {
+      "morning": "Good morning {{name}}! Have a great day on NGUESSBEAUTY 🌅",
+      "afternoon": "Good afternoon {{name}}! Nice to see you again 🌞",
+      "evening": "Good evening {{name}}! Have a wonderful evening 🌙"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "todayAppointments": "Today's appointments",
+    "weekRevenue": "This week's revenue",
+    "monthRevenue": "This month's revenue",
+    "totalClients": "Total clients",
+    "noShowRate": "No-show rate",
+    "recentAppointments": "Recent appointments",
+    "quickActions": "Quick actions",
+    "statistics": "Statistics"
   },
   "booking": {
     "book": "Book",
-    "selectService": "Select Service",
-    "selectStaff": "Select Staff",
-    "selectDateTime": "Select Date & Time",
-    "customerInfo": "Your Information",
+    "selectService": "Select service",
+    "selectStaff": "Select staff",
+    "selectDateTime": "Select date & time",
+    "customerInfo": "Your information",
     "payment": "Payment",
     "confirmation": "Confirmation",
-    "success": "Booking Confirmed!",
+    "success": "Booking confirmed!",
     "cancel": "Cancel",
     "modify": "Modify"
   },

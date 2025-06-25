@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Search, MapPin, Bell, User, Heart, LogOut, Wallet } from 'lucide-react';
+import { Menu, X, Search, MapPin, Bell, User, Heart, LogOut, Wallet, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../hooks/useNotifications';
 import NotificationCenter from '../Notifications/NotificationCenter';
@@ -11,14 +12,22 @@ const Header: React.FC = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
+  const { t, i18n } = useTranslation();
 
   const { unreadCount } = useNotifications(
     user?.id || '', 
     user?.role || 'client'
   );
+
+  const languages = [
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'en', name: 'English', flag: '🇺🇸' }
+  ];
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -26,6 +35,11 @@ const Header: React.FC = () => {
     await logout();
     navigate('/');
     setShowUserMenu(false);
+  };
+
+  const changeLanguage = (langCode: string) => {
+    i18n.changeLanguage(langCode);
+    setShowLanguageMenu(false);
   };
 
   return (
@@ -36,7 +50,7 @@ const Header: React.FC = () => {
           <Link to="/" className="flex items-center space-x-3">
             <div className="hidden sm:block">
               <h1 className="text-xl font-bold text-primary-600">NGUESSBEAUTY</h1>
-              <p className="text-xs text-gray-500">Votre beauté, notre passion</p>
+              <p className="text-xs text-gray-500">{t('common.tagline')}</p>
             </div>
           </Link>
 
@@ -48,7 +62,15 @@ const Header: React.FC = () => {
                 isActive('/') ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600'
               }`}
             >
-              Accueil
+              {t('navigation.home')}
+            </Link>
+            <Link 
+              to="/services" 
+              className={`font-medium transition-colors ${
+                isActive('/services') ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600'
+              }`}
+            >
+              {t('navigation.services')}
             </Link>
             <Link 
               to="/salons" 
@@ -56,7 +78,7 @@ const Header: React.FC = () => {
                 isActive('/salons') ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600'
               }`}
             >
-              Salons
+              {t('navigation.salons')}
             </Link>
             {isAuthenticated && (
               <Link 
@@ -65,13 +87,47 @@ const Header: React.FC = () => {
                   isActive('/mes-reservations') ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600'
                 }`}
               >
-                Mes Réservations
+                {t('navigation.bookings')}
               </Link>
             )}
           </nav>
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-3">
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                className="p-2 text-gray-600 hover:text-primary-600 transition-colors"
+              >
+                <Globe className="h-5 w-5" />
+              </button>
+
+              <AnimatePresence>
+                {showLanguageMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                  >
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => changeLanguage(lang.code)}
+                        className={`w-full flex items-center space-x-3 px-4 py-2 text-left hover:bg-gray-50 ${
+                          i18n.language === lang.code ? 'bg-primary-50 text-primary-600' : 'text-gray-700'
+                        }`}
+                      >
+                        <span className="text-lg">{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
             {/* Search Toggle */}
             <button
               onClick={() => setShowSearch(!showSearch)}
@@ -148,7 +204,7 @@ const Header: React.FC = () => {
                           onClick={() => setShowUserMenu(false)}
                         >
                           <User className="h-4 w-4" />
-                          <span>Mon profil</span>
+                          <span>{t('navigation.profile')}</span>
                         </Link>
                         {user?.role === 'client' && (
                           <Link
@@ -157,7 +213,7 @@ const Header: React.FC = () => {
                             onClick={() => setShowUserMenu(false)}
                           >
                             <Wallet className="h-4 w-4" />
-                            <span>Portefeuille fidélité</span>
+                            <span>{t('navigation.loyalty')}</span>
                           </Link>
                         )}
                         {user?.role === 'provider' && (
@@ -167,7 +223,7 @@ const Header: React.FC = () => {
                             onClick={() => setShowUserMenu(false)}
                           >
                             <User className="h-4 w-4" />
-                            <span>Tableau de bord</span>
+                            <span>{t('navigation.dashboard')}</span>
                           </Link>
                         )}
                         <button
@@ -175,7 +231,7 @@ const Header: React.FC = () => {
                           className="flex items-center space-x-2 w-full px-4 py-2 text-gray-700 hover:bg-gray-50"
                         >
                           <LogOut className="h-4 w-4" />
-                          <span>Se déconnecter</span>
+                          <span>{t('auth.logout')}</span>
                         </button>
                       </motion.div>
                     )}
@@ -188,13 +244,13 @@ const Header: React.FC = () => {
                   to="/login"
                   className="px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors"
                 >
-                  Connexion
+                  {t('auth.login')}
                 </Link>
                 <Link
                   to="/register"
                   className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors"
                 >
-                  S'inscrire
+                  {t('auth.register')}
                 </Link>
               </div>
             )}
@@ -223,7 +279,7 @@ const Header: React.FC = () => {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                   <input
                     type="text"
-                    placeholder="Rechercher un salon, service..."
+                    placeholder={t('search.placeholder')}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                   />
                 </div>
@@ -255,9 +311,19 @@ const Header: React.FC = () => {
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Accueil
+                {t('navigation.home')}
               </Link>
               
+              <Link 
+                to="/services" 
+                className={`block py-2 font-medium ${
+                  isActive('/services') ? 'text-primary-600' : 'text-gray-700'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {t('navigation.services')}
+              </Link>
+
               <Link 
                 to="/salons" 
                 className={`block py-2 font-medium ${
@@ -265,8 +331,9 @@ const Header: React.FC = () => {
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Salons
+                {t('navigation.salons')}
               </Link>
+              
               {isAuthenticated && (
                 <Link 
                   to="/mes-reservations" 
@@ -275,7 +342,7 @@ const Header: React.FC = () => {
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Mes Réservations
+                  {t('navigation.bookings')}
                 </Link>
               )}
               
@@ -286,14 +353,14 @@ const Header: React.FC = () => {
                     className="block py-2 text-gray-700 font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    Connexion
+                    {t('auth.login')}
                   </Link>
                   <Link
                     to="/register"
                     className="block py-2 text-primary-600 font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    S'inscrire
+                    {t('auth.register')}
                   </Link>
                 </div>
               )}

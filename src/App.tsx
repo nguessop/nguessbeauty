@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { AuthProvider } from './context/AuthContext';
+import { useInstantNotifications } from './hooks/useInstantNotifications';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
 import ProviderLayout from './components/Layout/ProviderLayout';
@@ -35,11 +36,19 @@ import './i18n';
 // Import Toastify CSS
 import 'react-toastify/dist/ReactToastify.css';
 
+// Notification Hook Component
+const NotificationHandler: React.FC = () => {
+  useInstantNotifications();
+  return null;
+};
+
 function App() {
   return (
     <AuthProvider>
       <Router>
         <div className="min-h-screen bg-white">
+          <NotificationHandler />
+          
           <Routes>
             {/* Public Routes with Header/Footer */}
             <Route path="/" element={
@@ -155,9 +164,7 @@ function App() {
 
             {/* Provider Routes with Admin Layout */}
             <Route path="/provider" element={
-              
-                <ProviderLayout />
-             
+              <ProviderLayout />
             }>
               <Route path="dashboard" element={<ProviderDashboard />} />
               <Route path="services" element={<ProviderServices />} />
@@ -179,6 +186,7 @@ function App() {
             draggable
             pauseOnHover
             theme="light"
+            className="z-50"
           />
         </div>
       </Router>
