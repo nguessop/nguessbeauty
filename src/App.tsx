@@ -1,69 +1,106 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useAuth } from './hooks/useAuth';
-import LoadingScreen from './components/LoadingScreen';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Header from './components/Layout/Header';
+import Footer from './components/Layout/Footer';
+import FloatingChatButton from './components/Chat/FloatingChatButton';
+import ProtectedRoute from './components/Auth/ProtectedRoute';
 import Services from './pages/Services';
-import Salons from './pages/Salons';
-import Profile from './pages/Profile';
+import Home from './pages/Home';
+import SalonSearch from './pages/SalonSearch';
+import SalonDetails from './pages/SalonDetails';
+import BookingFlow from './pages/BookingFlow';
+import BookingConfirmation from './pages/BookingConfirmation';
+import MyBookings from './pages/MyBookings';
 import Notifications from './pages/Notifications';
-import Layout from './components/Layout';
+import Profile from './pages/Profile';
+import Login from './pages/Auth/Login';
+import Register from './pages/Auth/Register';
+import ForgotPassword from './pages/Auth/ForgotPassword';
+import LoyaltyWallet from './pages/Client/LoyaltyWallet';
+import Unauthorized from './pages/Unauthorized';
+import { ToastContainer } from 'react-toastify';
+import './i18n';
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingScreen from './components/LoadingScreen';
+import { apiService } from './services/api.ts';
+import { useAuth } from './context/AuthContext';
 
-const App: React.FC = () => {
-  const { user, isAuthenticated, isLoading } = useAuth();
-
-  // Affichage du loading screen pendant le chargement
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
+function App() {
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route 
-            path="/login" 
-            element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />} 
-          />
-          <Route
-            path="/*"
-            element={
-              isAuthenticated ? (
-                <Layout>
-                  <Routes>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/services" element={<Services />} />
-                    <Route path="/salons" element={<Salons />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/notifications" element={<Notifications />} />
-                    <Route path="/" element={<Navigate to="/dashboard" />} />
-                  </Routes>
-                </Layout>
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-        </Routes>
-        
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-      </div>
-    </Router>
+      <AuthProvider>
+        <Router>
+          <div className="min-h-screen bg-white">
+            <Header />
+            <main>
+              <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<Home />} />
+                <Route path="/salons" element={<SalonSearch />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/salon/:id" element={<SalonDetails />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/unauthorized" element={<Unauthorized />} />
+
+                {/* Protected Routes */}
+                <Route path="/booking/:salonId" element={
+                  <ProtectedRoute>
+                    <BookingFlow />
+                  </ProtectedRoute>
+                } />
+                <Route path="/booking-confirmation/:bookingId" element={
+                  <ProtectedRoute>
+                    <BookingConfirmation />
+                  </ProtectedRoute>
+                } />
+                <Route path="/mes-reservations" element={
+                  <ProtectedRoute requiredRole="client">
+                    <MyBookings />
+                  </ProtectedRoute>
+                } />
+                <Route path="/notifications" element={
+                  <ProtectedRoute>
+                    <Notifications />
+                  </ProtectedRoute>
+                } />
+                <Route path="/profil" element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                } />
+
+                {/* Client-only Routes */}
+                <Route path="/portefeuille-fidelite" element={
+                  <ProtectedRoute requiredRole="client">
+                    <LoyaltyWallet />
+                  </ProtectedRoute>
+                } />
+              </Routes>
+            </main>
+            <Footer />
+
+            {/* Floating Chat Button */}
+            <FloatingChatButton />
+
+            {/* Toast Container */}
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+            />
+          </div>
+        </Router>
+      </AuthProvider>
   );
-};
+}
 
 export default App;
