@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User } from '../types/auth';
 import { authService } from '../services/authService';
+import LoadingScreen from '../components/LoadingScreen';
 
 interface AuthContextType {
   user: User | null;
@@ -14,7 +15,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-
 interface AuthProviderProps {
   children: ReactNode;
 }
@@ -26,10 +26,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const initAuth = async () => {
       try {
+        // Afficher le loading pendant au moins 2 secondes
+        const startTime = Date.now();
+        
         if (authService.isAuthenticated()) {
           const currentUser = await authService.getCurrentUser();
           setUser(currentUser);
-          console.log("currentUser123", currentUser);
+        }
+
+        // S'assurer que le loading dure au moins 2 secondes
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 2000 - elapsedTime);
+        
+        if (remainingTime > 0) {
+          await new Promise(resolve => setTimeout(resolve, remainingTime));
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
@@ -45,16 +55,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (login: string, password: string, role?: 'client' | 'provider' | 'admin' | 'user_simple') => {
     try {
       const response = await authService.login({ login, password, role });
-      // console.log("response.user",response.data.user);
-      // setUser(response.data.user);
       const { user, roles, token } = response.data;
 
       const userInfo = {
         ...user,
-        roles, // ← tableau de strings : ["admin", "client"]
-        activeRole: role, // ← rôle choisi dans le formulaire
+        roles,
+        activeRole: role,
       };
-      // 2. Stocker dans localStorage
+      
       setUser(userInfo);
     } catch (error) {
       throw error;
@@ -97,6 +105,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     updateUser,
   };
+
+  // Afficher le loading screen pendant l'initialisation
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <AuthContext.Provider value={value}>

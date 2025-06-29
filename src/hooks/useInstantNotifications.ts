@@ -14,17 +14,16 @@ export const useInstantNotifications = () => {
     // Notification de bienvenue à la connexion
     const showWelcomeNotification = () => {
       const hour = new Date().getHours();
-      let greeting = 'notifications.welcome.morning';
+      let greeting = 'Bonjour';
       
       if (hour >= 12 && hour < 17) {
-        greeting = 'notifications.welcome.afternoon';
+        greeting = 'Bon après-midi';
       } else if (hour >= 17) {
-        greeting = 'notifications.welcome.evening';
+        greeting = 'Bonsoir';
       }
 
-      toastService.success(t(greeting, { name: user.name }), {
-        autoClose: 3000,
-        icon: '👋'
+      toastService.success(`${greeting} ${user.name} ! Bienvenue sur NGUESSBEAUTY 👋`, {
+        autoClose: 3000
       });
     };
 
