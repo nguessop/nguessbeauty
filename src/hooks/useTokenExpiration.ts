@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useUserActivity } from './useUserActivity';
 import { toastService } from '../services/toastService';
+import { useNavigate } from 'react-router-dom';
 
 interface UseTokenExpirationOptions {
   checkInterval?: number; // Intervalle de vérification en millisecondes
@@ -17,6 +18,7 @@ export const useTokenExpiration = (options: UseTokenExpirationOptions = {}) => {
   } = options;
 
   const { logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const { isActive } = useUserActivity({ timeout: inactivityTimeout });
   const intervalRef = useRef<NodeJS.Timeout>();
   const warningShownRef = useRef(false);
@@ -53,6 +55,7 @@ export const useTokenExpiration = (options: UseTokenExpirationOptions = {}) => {
     if (!isActive && isTokenExpired()) {
       toastService.warning('Votre session a expiré en raison d\'une inactivité prolongée.');
       await logout();
+      navigate('/login', { replace: true });
       return;
     }
 
@@ -60,6 +63,7 @@ export const useTokenExpiration = (options: UseTokenExpirationOptions = {}) => {
     if (isActive && isTokenExpired()) {
       toastService.error('Votre session a expiré. Veuillez vous reconnecter.');
       await logout();
+      navigate('/login', { replace: true });
       return;
     }
 

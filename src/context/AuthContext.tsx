@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { User } from '../types/auth';
 import { authService } from '../services/authService';
 import LoadingScreen from '../components/LoadingScreen';
@@ -82,8 +83,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await authService.logout();
       setUser(null);
+      
+      // Redirection forcée vers la page de login
+      window.location.href = '/login';
     } catch (error) {
       console.error('Error during logout:', error);
+      // En cas d'erreur, forcer quand même la redirection
+      setUser(null);
+      window.location.href = '/login';
     }
   };
 
