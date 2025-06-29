@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { User } from '../types/auth';
 import { authService } from '../services/authService';
 import LoadingScreen from '../components/LoadingScreen';
@@ -81,15 +80,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const logout = async () => {
     try {
-      await authService.logout();
+      // Nettoyer immédiatement l'état local
       setUser(null);
+      
+      // Nettoyer le localStorage
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user');
+      
+      // Appeler le service de déconnexion (peut échouer si le serveur est inaccessible)
+      try {
+        await authService.logout();
+      } catch (error) {
+        console.warn('Erreur lors de la déconnexion côté serveur:', error);
+        // Continuer même si la déconnexion serveur échoue
+      }
       
       // Redirection forcée vers la page de login
       window.location.href = '/login';
+      
     } catch (error) {
       console.error('Error during logout:', error);
-      // En cas d'erreur, forcer quand même la redirection
+      // En cas d'erreur, forcer quand même la déconnexion locale et la redirection
       setUser(null);
+      localStorage.clear();
       window.location.href = '/login';
     }
   };

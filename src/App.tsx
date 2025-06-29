@@ -28,7 +28,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function AppContent() {
   // Gérer l'expiration des tokens avec déconnexion intelligente
   useTokenExpiration({
-    checkInterval: 60000, // Vérifier toutes les minutes
+    checkInterval: 30000, // Vérifier toutes les 30 secondes
     inactivityTimeout: 15 * 60 * 1000, // 15 minutes d'inactivité
     warningTime: 5 * 60 * 1000 // Avertir 5 minutes avant expiration
   });

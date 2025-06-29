@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useUserActivity } from './useUserActivity';
 import { toastService } from '../services/toastService';
-import { useNavigate } from 'react-router-dom';
 
 interface UseTokenExpirationOptions {
   checkInterval?: number; // Intervalle de vérification en millisecondes
@@ -12,16 +11,16 @@ interface UseTokenExpirationOptions {
 
 export const useTokenExpiration = (options: UseTokenExpirationOptions = {}) => {
   const {
-    checkInterval = 60000, // 1 minute
+    checkInterval = 30000, // 30 secondes (plus fréquent)
     inactivityTimeout = 15 * 60 * 1000, // 15 minutes
     warningTime = 5 * 60 * 1000 // 5 minutes avant expiration
   } = options;
 
   const { logout, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-  const { isActive } = useUserActivity({ timeout: inactivityTimeout });
+  const { isActive, lastActivity } = useUserActivity({ timeout: inactivityTimeout });
   const intervalRef = useRef<NodeJS.Timeout>();
   const warningShownRef = useRef(false);
+  const lastCheckRef = useRef<number>(Date.now());
 
   const getTokenExpiration = (): number | null => {
     const token = localStorage.getItem('auth_token');
@@ -48,27 +47,64 @@ export const useTokenExpiration = (options: UseTokenExpirationOptions = {}) => {
     return Math.max(0, expiration - Date.now());
   };
 
+  const forceLogoutAndRedirect = async (reason: string) => {
+    console.log(`Déconnexion forcée: ${reason}`);
+    
+    try {
+      // Nettoyer immédiatement les données locales
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user');
+      
+      // Afficher le message
+      toastService.warning(reason);
+      
+      // Attendre un peu pour que l'utilisateur voie le message
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Déconnexion via le contexte
+      await logout();
+      
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+      // En cas d'erreur, forcer la redirection
+      window.location.href = '/login';
+    }
+  };
+
   const handleTokenExpiration = async () => {
     if (!isAuthenticated) return;
 
-    // Si l'utilisateur est inactif et le token est expiré, déconnecter automatiquement
-    if (!isActive && isTokenExpired()) {
-      toastService.warning('Votre session a expiré en raison d\'une inactivité prolongée.');
-      await logout();
-      navigate('/login', { replace: true });
-      return;
-    }
-
-    // Si l'utilisateur est actif mais le token est expiré, demander une reconnexion
-    if (isActive && isTokenExpired()) {
-      toastService.error('Votre session a expiré. Veuillez vous reconnecter.');
-      await logout();
-      navigate('/login', { replace: true });
-      return;
-    }
-
-    // Afficher un avertissement si le token expire bientôt (seulement si l'utilisateur est actif)
+    const now = Date.now();
+    const tokenExpired = isTokenExpired();
     const timeUntilExpiration = getTimeUntilExpiration();
+    const timeSinceLastActivity = now - lastActivity;
+
+    // Cas 1: Token expiré ET utilisateur inactif depuis plus de 5 minutes
+    if (tokenExpired && timeSinceLastActivity > 5 * 60 * 1000) {
+      await forceLogoutAndRedirect(
+        'Votre session a expiré en raison d\'une inactivité prolongée. Redirection vers la connexion...'
+      );
+      return;
+    }
+
+    // Cas 2: Token expiré ET utilisateur actif récemment (moins de 5 minutes)
+    if (tokenExpired && timeSinceLastActivity <= 5 * 60 * 1000) {
+      await forceLogoutAndRedirect(
+        'Votre session a expiré. Veuillez vous reconnecter...'
+      );
+      return;
+    }
+
+    // Cas 3: Utilisateur inactif depuis longtemps (plus de 20 minutes) même si token valide
+    if (timeSinceLastActivity > 20 * 60 * 1000) {
+      await forceLogoutAndRedirect(
+        'Déconnexion automatique pour inactivité prolongée...'
+      );
+      return;
+    }
+
+    // Cas 4: Avertissement si le token expire bientôt ET utilisateur actif
     if (isActive && timeUntilExpiration <= warningTime && timeUntilExpiration > 0 && !warningShownRef.current) {
       const minutesLeft = Math.ceil(timeUntilExpiration / (60 * 1000));
       toastService.warning(
@@ -82,6 +118,8 @@ export const useTokenExpiration = (options: UseTokenExpirationOptions = {}) => {
     if (timeUntilExpiration > warningTime) {
       warningShownRef.current = false;
     }
+
+    lastCheckRef.current = now;
   };
 
   useEffect(() => {
@@ -98,11 +136,13 @@ export const useTokenExpiration = (options: UseTokenExpirationOptions = {}) => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isAuthenticated, isActive, checkInterval]);
+  }, [isAuthenticated, isActive, lastActivity, checkInterval]);
 
   return {
     isTokenExpired: isTokenExpired(),
     timeUntilExpiration: getTimeUntilExpiration(),
-    isUserActive: isActive
+    isUserActive: isActive,
+    lastActivity,
+    timeSinceLastActivity: Date.now() - lastActivity
   };
 };

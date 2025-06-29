@@ -5,6 +5,7 @@ import { authService } from './authService';
 class ApiService {
   private api: AxiosInstance;
   private baseURL: string;
+  private isHandlingTokenExpiration = false;
 
   constructor() {
     this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8054/api';
@@ -39,6 +40,11 @@ class ApiService {
       async (error) => {
         const originalRequest = error.config;
 
+        // Éviter les boucles infinies
+        if (this.isHandlingTokenExpiration) {
+          return Promise.reject(error);
+        }
+
         // Important : marquer explicitement _retry comme false si non défini
         if (typeof originalRequest._retry === 'undefined') {
           originalRequest._retry = false;
@@ -56,7 +62,7 @@ class ApiService {
             }
           } catch (refreshError) {
             // Refresh échoué : logout forcé
-            console.log("Token expiré et non rafraîchissable → déconnexion");
+            console.log("Token expiré et non rafraîchissable → déconnexion automatique");
             await this.handleTokenExpiration();
           }
         }
@@ -67,15 +73,21 @@ class ApiService {
   }
 
   private async handleTokenExpiration(): Promise<void> {
+    if (this.isHandlingTokenExpiration) {
+      return; // Éviter les appels multiples
+    }
+
+    this.isHandlingTokenExpiration = true;
+
     try {
-      // Nettoyer les données locales
+      // Nettoyer immédiatement les données locales
       this.removeToken();
       
       // Afficher le message d'erreur
-      toastService.error('Votre session a expiré. Redirection vers la page de connexion...');
+      toastService.error('Session expirée. Redirection automatique vers la connexion...');
       
       // Attendre un peu pour que l'utilisateur voie le message
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       // Rediriger vers la page de login
       window.location.href = '/login';
@@ -84,6 +96,8 @@ class ApiService {
       console.error('Erreur lors de la gestion de l\'expiration du token:', error);
       // En cas d'erreur, forcer la redirection
       window.location.href = '/login';
+    } finally {
+      this.isHandlingTokenExpiration = false;
     }
   }
 
@@ -125,6 +139,20 @@ class ApiService {
     } catch (error) {
       // Propage l'erreur vers l'interceptor
       throw new Error('Token refresh failed');
+    }
+  }
+
+  // Méthode pour vérifier si le token est expiré
+  public isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) return true;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Date.now() / 1000;
+      return payload.exp < currentTime;
+    } catch (error) {
+      return true;
     }
   }
 
