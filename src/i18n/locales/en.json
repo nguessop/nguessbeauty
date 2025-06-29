@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "filter": "Filter",
+    "close": "Close",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "yes": "Yes",
+    "no": "No",
+    "tagline": "Your beauty, our passion"
+  },
+  "navigation": {
+    "home": "Home",
+    "salons": "Salons",
+    "services": "Services",
+    "bookings": "My Bookings",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "loyalty": "Loyalty",
+    "dashboard": "Dashboard",
+    "analytics": "Analytics",
+    "staff": "Staff",
+    "communications": "Communications"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember Me",
+    "client": "Client",
+    "provider": "Provider",
+    "name": "Full Name",
+    "phone": "Phone"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "todayAppointments": "Today's Appointments",
+    "weekRevenue": "Week Revenue",
+    "monthRevenue": "Month Revenue",
+    "totalClients": "Total Clients",
+    "noShowRate": "No-show Rate",
+    "recentAppointments": "Recent Appointments",
+    "quickActions": "Quick Actions",
+    "statistics": "Statistics"
+  },
+  "services": {
+    "title": "Services",
+    "description": "Discover our beauty services",
+    "haircut": "Haircut",
+    "makeup": "Makeup",
+    "manicure": "Manicure",
+    "pedicure": "Pedicure",
+    "facial": "Facial Care",
+    "massage": "Massage",
+    "extensions": "Extensions",
+    "braids": "Braids",
+    "relaxer": "Hair Relaxer",
+    "coloring": "Hair Coloring"
+  },
+  "search": {
+    "placeholder": "Search salon, service...",
+    "location": "Location",
+    "service": "Service",
+    "priceRange": "Price Range",
+    "rating": "Minimum Rating",
+    "sortBy": "Sort By",
+    "nearMe": "Near Me",
+    "results": "results found",
+    "noResults": "No results found",
+    "advancedSearch": "Advanced Search",
+    "title": "hair and beauty salon",
+    "description": "Find available beauty salons near you"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark All as Read",
+    "noNotifications": "No notifications",
+    "appointmentReminder": "Appointment Reminder",
+    "appointmentConfirmed": "Appointment Confirmed",
+    "newAppointment": "New Appointment",
+    "promotion": "Promotion",
+    "reviewRequest": "Review Request"
+  },
+  "booking": {
+    "book": "Book",
+    "selectService": "Select Service",
+    "selectStaff": "Select Staff",
+    "selectDateTime": "Select Date & Time",
+    "customerInfo": "Your Information",
+    "payment": "Payment",
+    "confirmation": "Confirmation",
+    "success": "Booking Confirmed!",
+    "cancel": "Cancel",
+    "modify": "Modify"
+  },
+  "messages": {
+    "success": {
+      "saved": "Saved successfully",
+      "deleted": "Deleted successfully",
+      "updated": "Updated successfully",
+      "created": "Created successfully",
+      "sent": "Sent successfully"
+    },
+    "error": {
+      "general": "An error occurred",
+      "network": "Connection error",
+      "validation": "Please check the entered information",
+      "unauthorized": "Unauthorized access",
+      "notFound": "Item not found"
+    }
+  },
+  "pages": {
+    "services": {
+      "title": "Services"
+    }
+  }
+}
