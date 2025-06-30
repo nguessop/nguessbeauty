@@ -18,6 +18,7 @@ import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import LoyaltyWallet from './pages/Client/LoyaltyWallet';
+import AdminDashboard from './pages/Admin/Dashboard';
 import Unauthorized from './pages/Unauthorized';
 import { ToastContainer } from 'react-toastify';
 import { useTokenExpiration } from './hooks/useTokenExpiration';
@@ -82,6 +83,13 @@ function AppContent() {
           <Route path="/portefeuille-fidelite" element={
             <ProtectedRoute requiredRole="client">
               <LoyaltyWallet />
+            </ProtectedRoute>
+          } />
+
+          {/* Admin-only Routes */}
+          <Route path="/admin/dashboard" element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
             </ProtectedRoute>
           } />
         </Routes>
