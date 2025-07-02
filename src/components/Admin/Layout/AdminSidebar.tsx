@@ -16,7 +16,11 @@ import {
   Bell,
   HelpCircle,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  MapPin,
+  Zap,
+  Globe,
+  Database
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
@@ -125,6 +129,13 @@ const AdminSidebar: React.FC = () => {
         { title: 'Utilisateurs', path: '/admin/analytics/users' },
         { title: 'Performances', path: '/admin/analytics/performance' }
       ]
+    },
+    {
+      id: 'map',
+      title: 'Carte des salons',
+      icon: MapPin,
+      path: '/admin/map',
+      single: true
     },
     {
       id: 'support',
