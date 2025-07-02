@@ -19,6 +19,8 @@ import Register from './pages/Auth/Register';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import LoyaltyWallet from './pages/Client/LoyaltyWallet';
 import AdminDashboard from './pages/Admin/Dashboard';
+import ClientsManagement from './components/Admin/Users/ClientsManagement';
+import SalonsManagement from './components/Admin/Users/SalonsManagement';
 import Unauthorized from './pages/Unauthorized';
 import { ToastContainer } from 'react-toastify';
 import { useTokenExpiration } from './hooks/useTokenExpiration';
@@ -39,65 +41,108 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
-      <main>
-        <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Home />} />
-          <Route path="/salons" element={<SalonSearch />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/salon/:id" element={<SalonDetails />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/unauthorized" element={<Unauthorized />} />
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={
+          <>
+            <Header />
+            <Home />
+            <Footer />
+            <FloatingChatButton />
+          </>
+        } />
+        <Route path="/salons" element={
+          <>
+            <Header />
+            <SalonSearch />
+            <Footer />
+            <FloatingChatButton />
+          </>
+        } />
+        <Route path="/services" element={
+          <>
+            <Header />
+            <Services />
+            <Footer />
+            <FloatingChatButton />
+          </>
+        } />
+        <Route path="/salon/:id" element={
+          <>
+            <Header />
+            <SalonDetails />
+            <Footer />
+            <FloatingChatButton />
+          </>
+        } />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
-          {/* Protected Routes */}
-          <Route path="/booking/:salonId" element={
-            <ProtectedRoute>
-              <BookingFlow />
-            </ProtectedRoute>
-          } />
-          <Route path="/booking-confirmation/:bookingId" element={
-            <ProtectedRoute>
-              <BookingConfirmation />
-            </ProtectedRoute>
-          } />
-          <Route path="/mes-reservations" element={
-            <ProtectedRoute requiredRole="client">
-              <MyBookings />
-            </ProtectedRoute>
-          } />
-          <Route path="/notifications" element={
-            <ProtectedRoute>
-              <Notifications />
-            </ProtectedRoute>
-          } />
-          <Route path="/profil" element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          } />
+        {/* Protected Routes */}
+        <Route path="/booking/:salonId" element={
+          <ProtectedRoute>
+            <Header />
+            <BookingFlow />
+            <Footer />
+          </ProtectedRoute>
+        } />
+        <Route path="/booking-confirmation/:bookingId" element={
+          <ProtectedRoute>
+            <Header />
+            <BookingConfirmation />
+            <Footer />
+          </ProtectedRoute>
+        } />
+        <Route path="/mes-reservations" element={
+          <ProtectedRoute requiredRole="client">
+            <Header />
+            <MyBookings />
+            <Footer />
+          </ProtectedRoute>
+        } />
+        <Route path="/notifications" element={
+          <ProtectedRoute>
+            <Header />
+            <Notifications />
+            <Footer />
+          </ProtectedRoute>
+        } />
+        <Route path="/profil" element={
+          <ProtectedRoute>
+            <Header />
+            <Profile />
+            <Footer />
+          </ProtectedRoute>
+        } />
 
-          {/* Client-only Routes */}
-          <Route path="/portefeuille-fidelite" element={
-            <ProtectedRoute requiredRole="client">
-              <LoyaltyWallet />
-            </ProtectedRoute>
-          } />
+        {/* Client-only Routes */}
+        <Route path="/portefeuille-fidelite" element={
+          <ProtectedRoute requiredRole="client">
+            <Header />
+            <LoyaltyWallet />
+            <Footer />
+          </ProtectedRoute>
+        } />
 
-          {/* Admin-only Routes */}
-          <Route path="/admin/dashboard" element={
-            <ProtectedRoute requiredRole="admin">
-              <AdminDashboard />
-            </ProtectedRoute>
-          } />
-        </Routes>
-      </main>
-      <Footer />
-
-      {/* Floating Chat Button */}
-      <FloatingChatButton />
+        {/* Admin-only Routes */}
+        <Route path="/admin/dashboard" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/users/clients" element={
+          <ProtectedRoute requiredRole="admin">
+            <ClientsManagement />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/users/salons" element={
+          <ProtectedRoute requiredRole="admin">
+            <SalonsManagement />
+          </ProtectedRoute>
+        } />
+      </Routes>
 
       {/* Toast Container */}
       <ToastContainer
