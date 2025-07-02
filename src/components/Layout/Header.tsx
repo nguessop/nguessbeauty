@@ -29,6 +29,15 @@ const Header: React.FC = () => {
     { code: 'en', name: 'English', flag: '🇺🇸' }
   ];
 
+  // Vérifier si l'utilisateur est admin
+  const isAdmin = user?.roles?.includes('admin');
+
+  // Vérifier si l'utilisateur est client
+  const isCustomer = user?.roles?.includes('client');
+
+  // Vérifier si l'utilisateur est provider
+  const isProvider = user?.roles?.includes('provider');
+
   const isActive = (path: string) => location.pathname === path;
 
   const handleLogout = async () => {
@@ -80,7 +89,7 @@ const Header: React.FC = () => {
               >
                 {t('navigation.salons')}
               </Link>
-              {isAuthenticated && user?.roles?.includes("client") && (
+              {isAuthenticated && isCustomer && (
                   <Link
                       to="/mes-reservations"
                       className={`font-medium transition-colors ${
@@ -88,6 +97,17 @@ const Header: React.FC = () => {
                       }`}
                   >
                     {t('navigation.bookings')}
+                  </Link>
+              )}
+              {/* Menu Dashboard Admin */}
+              {isAuthenticated && isAdmin && (
+                  <Link
+                      to="/admin/dashboard"
+                      className={`font-medium transition-colors ${
+                          isActive('/admin/dashboard') ? 'text-primary-600' : 'text-gray-700 hover:text-primary-600'
+                      }`}
+                  >
+                    Dashboard Admin
                   </Link>
               )}
             </nav>
@@ -158,7 +178,7 @@ const Header: React.FC = () => {
                     </button>
 
                     {/* Loyalty Wallet (Client only) */}
-                    {user?.roles?.includes("client") && (
+                    {isCustomer && (
                         <Link
                             to="/portefeuille-fidelite"
                             className="p-2 text-gray-600 hover:text-primary-600 transition-colors"
@@ -206,7 +226,7 @@ const Header: React.FC = () => {
                                 <User className="h-4 w-4" />
                                 <span>{t('navigation.profile')}</span>
                               </Link>
-                              {user?.role === 'client' && (
+                              {isCustomer && (
                                   <Link
                                       to="/portefeuille-fidelite"
                                       className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
@@ -216,7 +236,7 @@ const Header: React.FC = () => {
                                     <span>{t('navigation.loyalty')}</span>
                                   </Link>
                               )}
-                              {user?.role === 'provider' && (
+                              {isProvider && (
                                   <Link
                                       to="/provider/dashboard"
                                       className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-50"

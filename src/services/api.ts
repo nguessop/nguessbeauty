@@ -1,12 +1,11 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { toastService } from './toastService.ts';
-import { history } from './navigation';
-import {authService} from "./authService.ts";
-import {useEffect} from "react";
+import { toastService } from './toastService';
+import { authService } from './authService';
 
 class ApiService {
   private api: AxiosInstance;
   private baseURL: string;
+  private isHandlingTokenExpiration = false;
 
   constructor() {
     this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8054/api';
@@ -34,16 +33,17 @@ class ApiService {
         },
         (error) => Promise.reject(error)
     );
+
     // Response interceptor to handle token expiration
     this.api.interceptors.response.use(
         (response) => response,
         async (error) => {
-          console.log("Interceptor déclenché, erreur Axios :", error); // ← ce log DOIT apparaître
           const originalRequest = error.config;
-          console.log("Axios Interceptor Erreur:", error);
-          console.log("error.response=", error.response);
-          console.log("error.request=", error.request);
-          console.log("error.message=", error.message);
+
+          // Éviter les boucles infinies
+          if (this.isHandlingTokenExpiration) {
+            return Promise.reject(error);
+          }
 
           // Important : marquer explicitement _retry comme false si non défini
           if (typeof originalRequest._retry === 'undefined') {
@@ -52,7 +52,7 @@ class ApiService {
 
           if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
-            console.log("bearer teste")
+
             try {
               await this.refreshToken();
               const token = this.getToken();
@@ -62,18 +62,43 @@ class ApiService {
               }
             } catch (refreshError) {
               // Refresh échoué : logout forcé
-              console.log("Token expiré et non rafraîchissable → déconnexion");
-              await authService.logout();
-              console.log("Token expiré et non rafraîchissable → déconnexionssss");
-              toastService.error('Votre session a expiré. Veuillez vous reconnecter.');
-              // Utilise l’historique pour rediriger
-              history.push('/login');
+              console.log("Token expiré et non rafraîchissable → déconnexion automatique");
+              await this.handleTokenExpiration();
             }
           }
 
           return Promise.reject(error);
         }
     );
+  }
+
+  private async handleTokenExpiration(): Promise<void> {
+    if (this.isHandlingTokenExpiration) {
+      return; // Éviter les appels multiples
+    }
+
+    this.isHandlingTokenExpiration = true;
+
+    try {
+      // Nettoyer immédiatement les données locales
+      this.removeToken();
+
+      // Afficher le message d'erreur
+      toastService.error('Session expirée. Redirection automatique vers la connexion...');
+
+      // Attendre un peu pour que l'utilisateur voie le message
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Rediriger vers la page de login
+      window.location.href = '/login';
+
+    } catch (error) {
+      console.error('Erreur lors de la gestion de l\'expiration du token:', error);
+      // En cas d'erreur, forcer la redirection
+      window.location.href = '/login';
+    } finally {
+      this.isHandlingTokenExpiration = false;
+    }
   }
 
   private getToken(): string | null {
@@ -107,15 +132,27 @@ class ApiService {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("je suis là4")
 
       const { access_token } = response.data.data;
       this.setToken(access_token);
 
     } catch (error) {
-      // Propage l’erreur vers l’interceptor
-      console.log("je suis là4")
+      // Propage l'erreur vers l'interceptor
       throw new Error('Token refresh failed');
+    }
+  }
+
+  // Méthode pour vérifier si le token est expiré
+  public isTokenExpired(): boolean {
+    const token = this.getToken();
+    if (!token) return true;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Date.now() / 1000;
+      return payload.exp < currentTime;
+    } catch (error) {
+      return true;
     }
   }
 

@@ -10,7 +10,6 @@ class AuthService {
 
   private loadUserFromStorage(): void {
     const userData = localStorage.getItem('user');
-    console.log("userData", userData)
     if (userData) {
       try {
         this.currentUser = JSON.parse(userData);
@@ -28,17 +27,19 @@ class AuthService {
 
   private clearUserFromStorage(): void {
     localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('refresh_token');
     this.currentUser = null;
   }
 
   public async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
       const response = await apiService.post<AuthResponse>('/auth/login', credentials);
-      console.log("myResponse",response);
+
       // Save token and user data
       apiService.setAuthToken(response.data.token);
       this.saveUserToStorage(response.data.user);
-      
+
       return response;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Erreur de connexion');
@@ -48,11 +49,11 @@ class AuthService {
   public async register(data: RegisterData): Promise<AuthResponse> {
     try {
       const response = await apiService.post<AuthResponse>('/auth/register', data);
-      
+
       // Save token and user data
       apiService.setAuthToken(response.token);
       this.saveUserToStorage(response.user);
-      
+
       return response;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Erreur lors de l\'inscription');
@@ -72,11 +73,11 @@ class AuthService {
 
   public async getCurrentUser(): Promise<User> {
     if (!this.currentUser) {
-      console.log("teste", this.currentUser)
       const user = await apiService.get<User>('/auth/me');
       this.saveUserToStorage(user);
       return user;
     }
+
     const rawUser = this.currentUser;
     const rolesArray = rawUser.roles?.map((role: any) => role.libelle) || [];
 
@@ -93,9 +94,6 @@ class AuthService {
     };
 
     return user;
-
-
-    // return this.currentUser;
   }
 
   public async updateProfile(data: Partial<User>): Promise<User> {
@@ -141,7 +139,7 @@ class AuthService {
     return this.currentUser;
   }
 
-  public getUserRole(): 'client' | 'provider' | 'admin' | 'user_simple' | null {
+  public getUserRole(): UserRole[] | null {
     return this.currentUser?.role || null;
   }
 
