@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "yes": "Oui",
+    "no": "Non",
+    "tagline": "Votre beauté, notre passion"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "salons": "Salons",
+    "services": "Services",
+    "bookings": "Mes Réservations",
+    "profile": "Profil",
+    "notifications": "Notifications",
+    "loyalty": "Fidélité",
+    "dashboard": "Tableau de bord",
+    "analytics": "Statistiques",
+    "staff": "Équipe",
+    "communications": "Communications"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Déconnexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "rememberMe": "Se souvenir de moi",
+    "client": "Client",
+    "provider": "Prestataire",
+    "name": "Nom complet",
+    "phone": "Téléphone"
+  },
+  "dashboard": {
+    "welcome": "Bienvenue",
+    "todayAppointments": "RDV aujourd'hui",
+    "weekRevenue": "CA cette semaine",
+    "monthRevenue": "CA ce mois",
+    "totalClients": "Clients totaux",
+    "noShowRate": "Taux d'absence",
+    "recentAppointments": "Rendez-vous récents",
+    "quickActions": "Actions rapides",
+    "statistics": "Statistiques"
+  },
+  "services": {
+    "title": "Services",
+    "description": "Découvrez nos services de beauté",
+    "haircut": "Coiffure",
+    "makeup": "Maquillage",
+    "manicure": "Manucure",
+    "pedicure": "Pédicure",
+    "facial": "Soins visage",
+    "massage": "Massage",
+    "extensions": "Extensions",
+    "braids": "Tresses",
+    "relaxer": "Défrisage",
+    "coloring": "Coloration"
+  },
+  "search": {
+    "placeholder": "Rechercher un salon, service...",
+    "location": "Localisation",
+    "service": "Service",
+    "priceRange": "Gamme de prix",
+    "rating": "Note minimum",
+    "sortBy": "Trier par",
+    "nearMe": "Près de moi",
+    "results": "résultats trouvés",
+    "noResults": "Aucun résultat trouvé",
+    "advancedSearch": "Recherche avancée",
+    "title": "salons de beauté",
+    "description": "Localisez vos salons de beautés disponibles"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Tout marquer comme lu",
+    "noNotifications": "Aucune notification",
+    "appointmentReminder": "Rappel de rendez-vous",
+    "appointmentConfirmed": "Rendez-vous confirmé",
+    "newAppointment": "Nouveau rendez-vous",
+    "promotion": "Promotion",
+    "reviewRequest": "Demande d'avis"
+  },
+  "booking": {
+    "book": "Réserver",
+    "selectService": "Choisir un service",
+    "selectStaff": "Choisir un professionnel",
+    "selectDateTime": "Choisir date et heure",
+    "customerInfo": "Vos informations",
+    "payment": "Paiement",
+    "confirmation": "Confirmation",
+    "success": "Réservation confirmée !",
+    "cancel": "Annuler",
+    "modify": "Modifier"
+  },
+  "messages": {
+    "success": {
+      "saved": "Enregistré avec succès",
+      "deleted": "Supprimé avec succès",
+      "updated": "Mis à jour avec succès",
+      "created": "Créé avec succès",
+      "sent": "Envoyé avec succès"
+    },
+    "error": {
+      "general": "Une erreur s'est produite",
+      "network": "Erreur de connexion",
+      "validation": "Veuillez vérifier les informations saisies",
+      "unauthorized": "Accès non autorisé",
+      "notFound": "Élément non trouvé"
+    }
+  },
+  "pages": {
+    "services": {
+      "title": "Services"
+    }
+  }
+}
