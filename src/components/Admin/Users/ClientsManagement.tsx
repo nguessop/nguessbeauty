@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Filter, Download, Eye, Ban, MoreVertical, Calendar, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
+import AdminLayout from "../Layout/AdminLayout.tsx";
 
 const ClientsManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -83,7 +84,8 @@ const ClientsManagement: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+      <AdminLayout>
+        <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
@@ -300,6 +302,7 @@ const ClientsManagement: React.FC = () => {
         </div>
       </div>
     </div>
+      </AdminLayout>
   );
 };
 

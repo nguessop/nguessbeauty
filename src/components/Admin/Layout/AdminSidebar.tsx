@@ -16,7 +16,11 @@ import {
   Bell,
   HelpCircle,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
+  MapPin,
+  Zap,
+  Globe,
+  Database
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
@@ -127,6 +131,13 @@ const AdminSidebar: React.FC = () => {
       ]
     },
     {
+      id: 'map',
+      title: 'Carte des salons',
+      icon: MapPin,
+      path: '/admin/map',
+      single: true
+    },
+    {
       id: 'support',
       title: 'Support',
       icon: HelpCircle,
@@ -167,7 +178,10 @@ const AdminSidebar: React.FC = () => {
             <span className="text-white font-bold text-lg">NB</span>
           </div>
           <div>
+            <Link
+                to="/">
             <h2 className="text-lg font-bold text-white">NGUESSBEAUTY</h2>
+            </Link>
             <p className="text-xs text-gray-400">Admin Panel</p>
           </div>
         </div>

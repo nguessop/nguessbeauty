@@ -1,15 +1,46 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Search, MapPin, Calendar, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { serviceCategories, cities } from '../../data/mockData';
+import { cities } from '../../data/mockData';
+import ServiceSelect from "../ServiceSelect.tsx";
+import {serviceService} from "../../services/serviceService.ts";
+import { useNavigate } from 'react-router-dom';
+
 
 const Hero: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedService, setSelectedService] = useState('');
+  const [services, setServices] = useState<{ id: string; name: string }[]>([]);
+  const navigate = useNavigate();
+
+  // Charger les services au montage du composant
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await serviceService.getAllServices();
+        setServices(response.data);
+      } catch (error) {
+        console.error('Erreur lors du chargement des services', error);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   const handleSearch = () => {
-    console.log('Recherche:', { searchQuery, selectedCity, selectedService });
+    // Construire l'URL avec les paramètres de recherche
+    const searchParams = new URLSearchParams();
+
+    if (selectedCity) searchParams.append('city', selectedCity);
+    if (selectedService) {
+      // const serviceName = services.find(s => s.id === selectedService)?.name || '';
+      searchParams.append('service_name', selectedService);
+    }
+    if (searchQuery) searchParams.append('query', searchQuery);
+
+    // Rediriger vers la page de résultats
+    navigate(`/services_results?${searchParams.toString()}`);
   };
 
   return (
@@ -84,21 +115,12 @@ const Hero: React.FC = () => {
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Service */}
-                <div className="relative">
-                  <select
-                    value={selectedService}
-                    onChange={(e) => setSelectedService(e.target.value)}
-                    className="w-full pl-4 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none bg-white"
-                  >
-                    <option value="">Tous les services</option>
-                    {serviceCategories.map(category => (
-                      <option key={category.id} value={category.id}>
-                        {category.icon} {category.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+
+                <ServiceSelect
+                    services={services}
+                    selectedService={selectedService}
+                    onServiceChange={setSelectedService}
+                />
 
                 {/* Location */}
                 <div className="relative">
