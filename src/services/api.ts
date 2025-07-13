@@ -24,51 +24,51 @@ class ApiService {
   private setupInterceptors(): void {
     // Request interceptor to add auth token
     this.api.interceptors.request.use(
-        (config) => {
-          const token = this.getToken();
-          if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-          }
-          return config;
-        },
-        (error) => Promise.reject(error)
+      (config) => {
+        const token = this.getToken();
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
     );
 
     // Response interceptor to handle token expiration
     this.api.interceptors.response.use(
-        (response) => response,
-        async (error) => {
-          const originalRequest = error.config;
+      (response) => response,
+      async (error) => {
+        const originalRequest = error.config;
 
-          // Éviter les boucles infinies
-          if (this.isHandlingTokenExpiration) {
-            return Promise.reject(error);
-          }
-
-          // Important : marquer explicitement _retry comme false si non défini
-          if (typeof originalRequest._retry === 'undefined') {
-            originalRequest._retry = false;
-          }
-
-          if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true;
-
-            try {
-              await this.refreshToken();
-              const token = this.getToken();
-              if (token) {
-                originalRequest.headers.Authorization = `Bearer ${token}`;
-                return this.api(originalRequest); // Retry original request
-              }
-            } catch (refreshError) {
-              // Refresh échoué : logout forcé
-              console.log("Token expiré et non rafraîchissable → déconnexion automatique");
-              await this.handleTokenExpiration();
-            }
-          }
-
+        // Éviter les boucles infinies
+        if (this.isHandlingTokenExpiration) {
           return Promise.reject(error);
         }
+
+        // Important : marquer explicitement _retry comme false si non défini
+        if (typeof originalRequest._retry === 'undefined') {
+          originalRequest._retry = false;
+        }
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          
+          try {
+            await this.refreshToken();
+            const token = this.getToken();
+            if (token) {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              return this.api(originalRequest); // Retry original request
+            }
+          } catch (refreshError) {
+            // Refresh échoué : logout forcé
+            console.log("Token expiré et non rafraîchissable → déconnexion automatique");
+            await this.handleTokenExpiration();
+          }
+        }
+
+        return Promise.reject(error);
+      }
     );
   }
 
@@ -82,16 +82,16 @@ class ApiService {
     try {
       // Nettoyer immédiatement les données locales
       this.removeToken();
-
+      
       // Afficher le message d'erreur
       toastService.error('Session expirée. Redirection automatique vers la connexion...');
-
+      
       // Attendre un peu pour que l'utilisateur voie le message
       await new Promise(resolve => setTimeout(resolve, 2000));
-
+      
       // Rediriger vers la page de login
       window.location.href = '/login';
-
+      
     } catch (error) {
       console.error('Erreur lors de la gestion de l\'expiration du token:', error);
       // En cas d'erreur, forcer la redirection
