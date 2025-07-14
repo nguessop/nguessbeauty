@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { Search, MapPin, Calendar, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { cities } from '../../data/mockData';
+import { cities, services as mockServices } from '../../data/mockData';
 import ServiceSelect from "../ServiceSelect.tsx";
 import {serviceService} from "../../services/serviceService.ts";
 import { useNavigate } from 'react-router-dom';
@@ -19,9 +19,11 @@ const Hero: React.FC = () => {
     const fetchServices = async () => {
       try {
         const response = await serviceService.getAllServices();
-        setServices(response.data);
+        setServices(response.map(s => ({ id: s.id.toString(), name: s.name })));
       } catch (error) {
-        console.error('Erreur lors du chargement des services', error);
+        console.warn('Backend non disponible, utilisation des données mock');
+        // Fallback vers les données mock
+        setServices(mockServices.map(s => ({ id: s.id.toString(), name: s.name })));
       }
     };
 
