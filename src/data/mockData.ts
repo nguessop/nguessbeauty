@@ -197,10 +197,10 @@ export const cities = [
 ];
 
 // Export des services pour utilisation comme fallback
-export const services = mockSalons.flatMap(salon => 
-  salon.services.map(service => ({
-    ...service,
-    salonName: salon.name,
-    salonId: salon.id
-  }))
+export const services = mockSalons.flatMap(salon =>
+    salon.services.map(service => ({
+      ...service,
+      salonName: salon.name,
+      salonId: salon.id
+    }))
 );

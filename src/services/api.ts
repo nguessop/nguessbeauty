@@ -13,6 +13,8 @@ class ApiService {
     
     console.log('API Base URL:', this.baseURL);
 
+    console.log('API Base URL:', this.baseURL);
+
     this.api = axios.create({
       baseURL: this.baseURL,
       timeout: 10000, // Timeout de 10 secondes
@@ -40,16 +42,17 @@ class ApiService {
 
     // Response interceptor to handle token expiration
     this.api.interceptors.response.use(
-      (response) => response,
-      async (error) => {
-        // Gestion spéciale des erreurs réseau
-        if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK' || !error.response) {
-          console.warn('Erreur réseau détectée:', error.message);
-          // Ne pas essayer de refresh le token en cas d'erreur réseau
-          return Promise.reject(new Error('Backend non disponible'));
-        }
-        
-        const originalRequest = error.config;
+
+        (response) => response,
+        async (error) => {
+          // Gestion spéciale des erreurs réseau
+          if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK' || !error.response) {
+            console.warn('Erreur réseau détectée:', error.message);
+            // Ne pas essayer de refresh le token en cas d'erreur réseau
+            return Promise.reject(new Error('Backend non disponible'));
+          }
+
+          const originalRequest = error.config;
 
         // Éviter les boucles infinies
         if (this.isHandlingTokenExpiration) {

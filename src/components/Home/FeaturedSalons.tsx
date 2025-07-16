@@ -1,22 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import { Star, MapPin, Clock, Phone, Heart } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Star, MapPin, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { mockSalons } from '../../data/mockData';
+import { salonService } from '../../services/salonService';
 import SalonWhatsAppButton from '../Chat/SalonWhatsAppButton';
 
-// import SalonService from '../../services/salonService';
-
-import { salonService } from '../../services/salonService';
-
 const FeaturedSalons: React.FC = () => {
-
-  const [salons, setSalons] = useState<any>([]);
+  const [salons, setSalons] = useState<any[]>([]);
   const [visibleSalons, setVisibleSalons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fr-FR').format(price) + ' FCFA';
-  };
+
+  // 👉 Base URL du backend Laravel
+  const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8054';
+
+  const formatPrice = (price: number) =>
+      new Intl.NumberFormat('fr-FR').format(price) + ' FCFA';
 
   const getPriceRangeText = (range: string) => {
     switch (range) {
@@ -41,17 +39,10 @@ const FeaturedSalons: React.FC = () => {
       try {
         // Vérifier si l'API est disponible
         const response = await salonService.getAllSalons();
-        
-        if (response && response.data) {
-          console.log('les salons', response.data);
-          setSalons(response.data);
-          setVisibleSalons(response.data.slice(0, 3));
-        } else {
-          // Fallback vers les données mock si l'API ne répond pas
-          console.warn('API non disponible, utilisation des données mock');
-          setSalons(mockSalons);
-          setVisibleSalons(mockSalons.slice(0, 3));
-        }
+        console.log('Les salons:', response.data);
+        setSalons(response.data);
+        setVisibleSalons(response.data.slice(0, 3));
+
       } catch (error) {
         console.warn('Backend non disponible, utilisation des données mock:', error);
         // Utiliser les données mock en cas d'erreur réseau
@@ -66,7 +57,7 @@ const FeaturedSalons: React.FC = () => {
   }, []);
 
   const handleShowAll = () => {
-    setVisibleSalons(salons); // ✅ On affiche tout
+    setVisibleSalons(salons);
     setShowAll(true);
   };
 
@@ -98,82 +89,102 @@ const FeaturedSalons: React.FC = () => {
 
           {/* Salons Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {visibleSalons.map((salon, index) => (
-                <motion.div
-                    key={salon.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: index * 0.1 }}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                >
-                  {/* Image */}
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                        src={salon.images_url?.[0] ?? '/placeholder.jpg'}
-                        alt={salon.name}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-4 left-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriceRangeColor(salon.price_range)}`}>
-                    {getPriceRangeText(salon.price_range)}
-                  </span>
-                    </div>
-                    <button className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
-                      <Heart className="h-4 w-4 text-gray-600 hover:text-red-500" />
-                    </button>
-                  </div>
+            {visibleSalons.map((salon, index) => {
+              // ✅ Chercher l’image de type "cover"
+              const coverImage = salon.pictures?.find(
+                  (pic: any) => pic.picture_type === 'cover'
+              )?.url;
 
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="mb-4">
-                      <h3 className="text-xl font-bold text-secondary-900 mb-2">{salon.name}</h3>
-                      <div className="flex items-center space-x-4 text-sm text-secondary-600">
-                        <div className="flex items-center space-x-1">
-                          <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                          <span className="font-semibold">{salon.rating ?? 0}</span>
-                          <span>({salon.reviewCount} avis)</span>
+              // 🔗 URL complète de l’image
+              const imageUrl = coverImage
+                  ? `${BASE_URL}${coverImage}`
+                  : '/placeholder.jpg';
+
+              return (
+                  <motion.div
+                      key={salon.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.8, delay: index * 0.1 }}
+                      className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                  >
+                    {/* Image */}
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                          src={imageUrl}
+                          alt={salon.name}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-4 left-4">
+                    <span
+                        className={`px-3 py-1 rounded-full text-xs font-semibold ${getPriceRangeColor(
+                            salon.price_range
+                        )}`}
+                    >
+                      {getPriceRangeText(salon.price_range)}
+                    </span>
+                      </div>
+                      <button className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors">
+                        <Heart className="h-4 w-4 text-gray-600 hover:text-red-500" />
+                      </button>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6">
+                      <div className="mb-4">
+                        <h3 className="text-xl font-bold text-secondary-900 mb-2">
+                          {salon.name}
+                        </h3>
+                        <div className="flex items-center space-x-4 text-sm text-secondary-600">
+                          <div className="flex items-center space-x-1">
+                            <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                            <span className="font-semibold">{salon.rating ?? 0}</span>
+                            <span>({salon.reviewCount} avis)</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Location */}
-                    <div className="flex items-center space-x-2 text-secondary-600 mb-4">
-                      <MapPin className="h-4 w-4" />
-                      <span className="text-sm">{salon.district}, {salon.city}</span>
-                    </div>
+                      {/* Location */}
+                      <div className="flex items-center space-x-2 text-secondary-600 mb-4">
+                        <MapPin className="h-4 w-4" />
+                        <span className="text-sm">
+                      {salon.district}, {salon.city}
+                    </span>
+                      </div>
 
-                    {/* Services */}
-                    <div className="mb-4">
-                      <div className="flex flex-wrap gap-2">
-                        {(salon.service ?? []).slice(0, 3).map(service => (
-                            <span
-                                key={service.id}
-                                className="px-2 py-1 bg-primary-50 text-primary-700 text-xs rounded-full"
-                            >
-                        {service.name}
-                      </span>
-                        ))}
-                        {(salon.service ?? []).length > 3 && (
-                            <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                        +{(salon.service ?? []).length - 3} autres
-                      </span>
-                        )}
+                      {/* Services */}
+                      <div className="mb-4">
+                        <div className="flex flex-wrap gap-2">
+                          {(salon.service ?? []).slice(0, 3).map((service: any) => (
+                              <span
+                                  key={service.id}
+                                  className="px-2 py-1 bg-primary-50 text-primary-700 text-xs rounded-full"
+                              >
+                          {service.name}
+                        </span>
+                          ))}
+                          {(salon.service ?? []).length > 3 && (
+                              <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                          +{(salon.service ?? []).length - 3} autres
+                        </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* WhatsApp */}
+                      <div className="mb-4">
+                        <SalonWhatsAppButton
+                            salonName={salon.name}
+                            whatsappNumber={salon.whatsap ?? salon.phone}
+                            phoneNumber={salon.phone}
+                            variant="full"
+                            className="w-full"
+                        />
                       </div>
                     </div>
-
-                    {/* WhatsApp */}
-                    <div className="mb-4">
-                      <SalonWhatsAppButton
-                          salonName={salon.name}
-                          whatsappNumber={salon.whatsap ?? salon.phone}
-                          phoneNumber={salon.phone}
-                          variant="full"
-                          className="w-full"
-                      />
-                    </div>
-                  </div>
-                </motion.div>
-            ))}
+                  </motion.div>
+              );
+            })}
           </div>
 
           {/* Voir plus */}

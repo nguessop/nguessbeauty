@@ -6,6 +6,8 @@ import ServiceSelect from "../ServiceSelect.tsx";
 import {serviceService} from "../../services/serviceService.ts";
 import { useNavigate } from 'react-router-dom';
 
+import RatingButton from "../Rating/RatingButton.tsx"; // ✅ Ajout de l'import
+
 
 const Hero: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -186,6 +188,8 @@ const Hero: React.FC = () => {
                 transition={{ delay: 1, duration: 0.8 }}
                 className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-lg p-4 max-w-xs"
               >
+
+
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center">
                     <Calendar className="h-6 w-6 text-primary-600" />
@@ -195,6 +199,17 @@ const Hero: React.FC = () => {
                     <div className="text-sm text-secondary-600">En quelques clics</div>
                   </div>
                 </div>
+                {/* On remplace les étoiles statiques par RatingButton */}
+                {/*<RatingButton*/}
+                {/*    targetId="hero-salon"*/}
+                {/*    targetType="salon"*/}
+                {/*    targetName="Salon de beauté moderne"*/}
+                {/*    currentRating={4.8}*/}
+                {/*    variant="full"*/}
+                {/*    onRatingSubmit={(rating, comment) => {*/}
+                {/*      console.log('Note soumise:', rating, comment);*/}
+                {/*    }}*/}
+                {/*/>*/}
               </motion.div>
 
               <motion.div
