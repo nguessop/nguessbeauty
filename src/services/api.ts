@@ -8,10 +8,14 @@ class ApiService {
   private isHandlingTokenExpiration = false;
 
   constructor() {
+    // Configuration de l'URL de base avec fallback
     this.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8054/api';
+
+    console.log('API Base URL:', this.baseURL);
 
     this.api = axios.create({
       baseURL: this.baseURL,
+      timeout: 10000, // Timeout de 10 secondes
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
@@ -38,6 +42,13 @@ class ApiService {
     this.api.interceptors.response.use(
         (response) => response,
         async (error) => {
+          // Gestion spéciale des erreurs réseau
+          if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK' || !error.response) {
+            console.warn('Erreur réseau détectée:', error.message);
+            // Ne pas essayer de refresh le token en cas d'erreur réseau
+            return Promise.reject(new Error('Backend non disponible'));
+          }
+
           const originalRequest = error.config;
 
           // Éviter les boucles infinies
