@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Search, MapPin, Bell, User, Heart, LogOut, Wallet, Globe } from 'lucide-react';
+import { Menu, X, Search, MapPin, Bell, User, Heart, LogOut, Wallet, Globe, LayoutDashboard } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
@@ -187,6 +187,16 @@ const Header: React.FC = () => {
                         </Link>
                     )}
 
+                    {/* Dashboard Admin (Admin only) */}
+                    {isAdmin && (
+                        <Link
+                            to="/admin/dashboard"
+                            className="p-2 text-gray-600 hover:text-primary-600 transition-colors"
+                        >
+                          <LayoutDashboard className="h-5 w-5" />
+                        </Link>
+                    )}
+
                     {/* Favorites */}
                     <button className="p-2 text-gray-600 hover:text-primary-600 transition-colors">
                       <Heart className="h-5 w-5" />
@@ -244,6 +254,16 @@ const Header: React.FC = () => {
                                   >
                                     <User className="h-4 w-4" />
                                     <span>{t('navigation.dashboard')}</span>
+                                  </Link>
+                              )}
+                              {isAdmin && (
+                                  <Link
+                                      to="/admin/dashboard"
+                                      className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-50"
+                                      onClick={() => setShowUserMenu(false)}
+                                  >
+                                    <LayoutDashboard className="h-4 w-4" />
+                                    <span>Dashboard Admin</span>
                                   </Link>
                               )}
                               <button
@@ -363,6 +383,18 @@ const Header: React.FC = () => {
                           onClick={() => setIsMenuOpen(false)}
                       >
                         {t('navigation.bookings')}
+                      </Link>
+                  )}
+
+                  {isAuthenticated && isAdmin && (
+                      <Link
+                          to="/admin/dashboard"
+                          className={`block py-2 font-medium ${
+                              isActive('/admin/dashboard') ? 'text-primary-600' : 'text-gray-700'
+                          }`}
+                          onClick={() => setIsMenuOpen(false)}
+                      >
+                        Dashboard Admin
                       </Link>
                   )}
 

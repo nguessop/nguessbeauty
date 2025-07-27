@@ -37,12 +37,17 @@ const FeaturedSalons: React.FC = () => {
   useEffect(() => {
     const fetchSalons = async () => {
       try {
+        // Vérifier si l'API est disponible
         const response = await salonService.getAllSalons();
         console.log('Les salons:', response.data);
         setSalons(response.data);
         setVisibleSalons(response.data.slice(0, 3));
+
       } catch (error) {
-        console.error('Erreur lors du chargement des salons:', error);
+        console.warn('Backend non disponible, utilisation des données mock:', error);
+        // Utiliser les données mock en cas d'erreur réseau
+        setSalons(mockSalons);
+        setVisibleSalons(mockSalons.slice(0, 3));
       } finally {
         setLoading(false);
       }
