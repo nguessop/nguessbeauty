@@ -55,7 +55,7 @@ const Footer: React.FC = () => {
             <div className="space-y-3 text-sm">
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-primary-400" />
-                <span className="text-gray-300">+237 6 XX XX XX XX</span>
+                <span className="text-gray-300">+237 6 97 84 73 60</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MessageCircle className="h-4 w-4 text-primary-400" />
@@ -63,7 +63,7 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-primary-400" />
-                <span className="text-gray-300">contact@nguessbeauty.cm</span>
+                <span className="text-gray-300">contact@nguesscomputing.cm</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-4 w-4 text-primary-400" />
@@ -90,7 +90,7 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-700 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-sm text-gray-400">
-              © 2025 NGUESSBEAUTY. Tous droits réservés.
+              © 2025 NGUESSCOMPUTING. Tous droits réservés.
             </div>
             <div className="flex space-x-6 text-sm">
               <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">

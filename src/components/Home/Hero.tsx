@@ -5,6 +5,7 @@ import { cities } from '../../data/mockData';
 import ServiceSelect from "../ServiceSelect.tsx";
 import {serviceService} from "../../services/serviceService.ts";
 import { useNavigate } from 'react-router-dom';
+import BookingModal from '../Booking/BookingModal';
 
 import RatingButton from "../Rating/RatingButton.tsx"; // ✅ Ajout de l'import
 
@@ -14,6 +15,7 @@ const Hero: React.FC = () => {
   const [selectedCity, setSelectedCity] = useState('');
   const [selectedService, setSelectedService] = useState('');
   const [services, setServices] = useState<{ id: string; name: string }[]>([]);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const navigate = useNavigate();
 
   // Charger les services au montage du composant
@@ -43,6 +45,10 @@ const Hero: React.FC = () => {
 
     // Rediriger vers la page de résultats
     navigate(`/services_results?${searchParams.toString()}`);
+  };
+
+  const handleQuickBooking = () => {
+    setIsBookingModalOpen(true);
   };
 
   return (
@@ -149,17 +155,41 @@ const Hero: React.FC = () => {
                 </button>
               </div>
 
-              {/* Quick Actions */}
-              <div className="flex flex-wrap gap-2 pt-2">
-                <span className="text-sm text-secondary-600">Populaire:</span>
-                <button className="text-sm bg-primary-100 text-primary-700 px-3 py-1 rounded-full hover:bg-primary-200 transition-colors">
-                  Coiffure
-                </button>
-                <button className="text-sm bg-primary-100 text-primary-700 px-3 py-1 rounded-full hover:bg-primary-200 transition-colors">
-                  Maquillage
-                </button>
-                <button className="text-sm bg-primary-100 text-primary-700 px-3 py-1 rounded-full hover:bg-primary-200 transition-colors">
-                  Manucure
+              {/*/!* Quick Actions *!/*/}
+              {/*<div className="flex flex-wrap gap-2 pt-2">*/}
+              {/*  <span className="text-sm text-secondary-600">Populaire:</span>*/}
+              {/*  <button className="text-sm bg-primary-100 text-primary-700 px-3 py-1 rounded-full hover:bg-primary-200 transition-colors">*/}
+              {/*    Coiffure*/}
+              {/*  </button>*/}
+              {/*  <button className="text-sm bg-primary-100 text-primary-700 px-3 py-1 rounded-full hover:bg-primary-200 transition-colors">*/}
+              {/*    Maquillage*/}
+              {/*  </button>*/}
+              {/*  <button className="text-sm bg-primary-100 text-primary-700 px-3 py-1 rounded-full hover:bg-primary-200 transition-colors">*/}
+              {/*    Manucure*/}
+              {/*  </button>*/}
+              {/*</div>*/}
+              {/* Quick Actions with Booking Button */}
+              <div className="flex flex-wrap gap-2 pt-2 items-center justify-between">
+                <div className="flex flex-wrap gap-2 items-center">
+                  <span className="text-sm text-secondary-600">Populaire:</span>
+                  <button className="text-sm bg-primary-100 text-primary-700 px-3 py-1 rounded-full hover:bg-primary-200 transition-colors">
+                    Coiffure
+                  </button>
+                  <button className="text-sm bg-primary-100 text-primary-700 px-3 py-1 rounded-full hover:bg-primary-200 transition-colors">
+                    Maquillage
+                  </button>
+                  <button className="text-sm bg-primary-100 text-primary-700 px-3 py-1 rounded-full hover:bg-primary-200 transition-colors">
+                    Manucure
+                  </button>
+                </div>
+
+                {/* Quick Booking Button */}
+                <button
+                    onClick={handleQuickBooking}
+                    className="bg-accent-500 hover:bg-accent-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors flex items-center space-x-2"
+                >
+                  <Calendar className="h-4 w-4" />
+                  <span>Réserver</span>
                 </button>
               </div>
             </motion.div>
@@ -230,6 +260,13 @@ const Hero: React.FC = () => {
           </motion.div>
         </div>
       </div>
+      {/* Booking Modal */}
+      <BookingModal
+          isOpen={isBookingModalOpen}
+          onClose={() => setIsBookingModalOpen(false)}
+          selectedService={selectedService}
+          selectedCity={selectedCity}
+      />
     </section>
   );
 };
